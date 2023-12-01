@@ -6,6 +6,6 @@ https://pypi.org/project/cinemagoer/
 
 https://pypi.org/project/requests/
 
-#### ... and would not be possible without them. 
+#### ...and would not be possible without them. 
 
-**Made with care by Zichen**
+Made with care by Zichen

@@ -15,19 +15,19 @@ The installation and setup is relatively simple; download the latest version of 
 
 If you are running Linux (or for whatever reason you want extra hassle), and you need to install the program manually, you need to download a couple of packages first. All of these packages can all be downloaded through `pip3`:
 
-- Cinemagoer
-- Requests
-- TheFuzz
-- PyInstaller
+* Cinemagoer
+* Requests
+* TheFuzz
+* PyInstaller
 
 Next, clone the repository by running the following commands: 
 
-```
+```bash
 git clone https://github.com/SomedudeX/PyMovie
 cd PyMovie
 ```
 
-You could stop here and use the python script as it is by running `App/entrypoint.py`, but if you would like to build the project into an executable, then you will need to install `PyInstaller`. Then, you can build the project by either running `./setup.sh`. 
+You could stop here and use the python script as it is by running `App/entrypoint.py`, but if you would like to build the project into an executable, then you will need to install PyInstaller. Then, you can build the project by either running `./setup.sh` or manually typing `pyinstaller App/entrypoint.py -onefile --name PyMovie`. 
 
 The output file will then be created in the dist folder. 
 
