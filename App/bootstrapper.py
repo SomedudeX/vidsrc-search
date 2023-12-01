@@ -65,7 +65,7 @@ def initialize():
 		print(f" > All required packages can be installed through 'pip' (Windows) or 'pip3' (macOS/Linux) command. ")
 		print(f" > ")
 		input(f" > Press [Enter/Return] to quit... {COLOR.END}")
-		quit()
+		sys.exit(0)
 
 
 	print(" [Log] Checking for initial boot... ")
@@ -89,7 +89,7 @@ def initialize():
 				delete_directory_recursive(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/movie")
 			if os.path.exists(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/tv"): 
 				delete_directory_recursive(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/tv")
-			quit(0)
+			sys.exit(0)
 	print(" [Log] Verifying library...")
 	make_directory(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/movie")
 	make_directory(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/tv")

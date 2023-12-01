@@ -2,6 +2,7 @@ import os
 import sys
 import time
 import bootstrapper
+import multiprocessing
 
 
 class COLOR:
@@ -38,6 +39,7 @@ def clear():
 
 
 if __name__ == "__main__": 
+	multiprocessing.freeze_support()
 	print(f"{COLOR.BOLD}\b [Log] Initializing bootstrapper{COLOR.END}")
 	time.sleep(0.5)
 	bootstrapper.initialize()
