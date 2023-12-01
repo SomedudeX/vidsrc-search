@@ -33,4 +33,4 @@ The output file will then be created in the dist folder.
 
 ### Development
 
-This app is more of a side-project, hence development would mostly be bug fixes. That said, you are welcomed to make a pull request and contribute to it. 
+This app is more of a side-project, hence development would mostly be bug fixes. That said, you are welcomed to make a pull request and contribute to it. A fair warning though that the codebase was hacked together hastefully, which means that some of it will need quite a bit of refactoring to be readable and maintainable. 

@@ -6,6 +6,8 @@ https://pypi.org/project/cinemagoer/
 
 https://pypi.org/project/requests/
 
+http://vidsrc.to/
+
 #### ...and would not be possible without them. 
 
 Made with care by Zichen

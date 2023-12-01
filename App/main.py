@@ -9,28 +9,16 @@ from imdb import Cinemagoer
 
 
 class COLOR:
-	if sys.platform == "win32": 
-		PURPLE = ''
-		CYAN = ''
-		DARKCYAN = ''
-		BLUE = ''
-		GREEN = ''
-		YELLOW = ''
-		RED = ''
-		BOLD = ''
-		UNDERLINE = ''
-		END = ''
-	else: 
-		PURPLE = '\033[95m'
-		CYAN = '\033[96m'
-		DARKCYAN = '\033[36m'
-		BLUE = '\033[94m'
-		GREEN = '\033[92m'
-		YELLOW = '\033[93m'
-		RED = '\033[91m'
-		BOLD = '\033[1m'
-		UNDERLINE = '\033[4m'
-		END = '\033[0m'
+	PURPLE = '\033[95m'
+	CYAN = '\033[96m'
+	DARKCYAN = '\033[36m'
+	BLUE = '\033[94m'
+	GREEN = '\033[92m'
+	YELLOW = '\033[93m'
+	RED = '\033[91m'
+	BOLD = '\033[1m'
+	UNDERLINE = '\033[4m'
+	END = '\033[0m'
 
 
 def clear():
@@ -53,6 +41,8 @@ def mainloop():
 		while True: 
 			clear()
 			Query = input(f"{COLOR.BOLD} > Search movies: {COLOR.END}")
+			if Query == "":
+				return
 			clear()
 			Entries = search_engine.search_library(Query)
 			if Entries == None:
@@ -67,35 +57,27 @@ def mainloop():
 			print(COLOR.BOLD, f"\b > ==== Search results for '{Query}' ====", COLOR.END)
 			print()
 			print(" > Available actions: ")
-			print(" > # - Select an entry         [Return/Enter] - Redo search")
-			print(" > Q - Quit Application                     R - Reset Application")
+			print(" > # - Select an entry         R - Reset Application")
 			Action = input(" > Action: ")
-
 			try:
 				Action = int(Action)
 				Entries[Action-1]
 			except:
-				if Action == "B" or Action == "b":
-					break
-				if Action == "Q" or Action == "q":
-					Affirm = input(" > Are you sure you want to quit? (Y/n) ")
-					if Affirm == "Y":
-						print("Cleaning up...")
-						time.sleep(0.1)
-						exit(0)
 				if Action == "R" or Action == "r":
 					Affirm = input(f"{COLOR.RED}{COLOR.BOLD}\b\b > Are you sure you want to reset this program? (Y/n) {COLOR.END}")
 					if Affirm == "Y":
 						uninstall.uninstall()
 						print(" [Log] Program succesfully reset: Quitting...")
 						time.sleep(1)
-						exit(0)
+						sys.exit(0)
+				else: 
+					break
 			else: 
 				clear()
 				print(f" {COLOR.BOLD}{Action}. {Entries[Action-1]['Title']}{COLOR.END}")
 				print(f" > Type   : {Entries[Action-1]['Type'].capitalize()}")
 				print(f" > Match  : {round(Entries[Action-1]['Match'], 1)}%")
-				print(f" > IMDB ID: {Entries[Action-1]['ID']}")
+				print(f" > IMDB ID: {Entries[Action-1]['ID'].replace('t', '')}")
 				print()
 				print(COLOR.BOLD, "\b > ==== Selected entry ====", COLOR.END)
 				print()
@@ -153,4 +135,6 @@ def mainloop():
 						webbrowser.open(Entries[Action-1]['URL'])
 					else: 
 						break
+				else:
+					break
 

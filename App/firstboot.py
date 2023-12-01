@@ -7,28 +7,16 @@ import download_engine
 
 
 class COLOR:
-	if sys.platform == "win32": 
-		PURPLE = ''
-		CYAN = ''
-		DARKCYAN = ''
-		BLUE = ''
-		GREEN = ''
-		YELLOW = ''
-		RED = ''
-		BOLD = ''
-		UNDERLINE = ''
-		END = ''
-	else: 
-		PURPLE = '\033[95m'
-		CYAN = '\033[96m'
-		DARKCYAN = '\033[36m'
-		BLUE = '\033[94m'
-		GREEN = '\033[92m'
-		YELLOW = '\033[93m'
-		RED = '\033[91m'
-		BOLD = '\033[1m'
-		UNDERLINE = '\033[4m'
-		END = '\033[0m'
+	PURPLE = '\033[95m'
+	CYAN = '\033[96m'
+	DARKCYAN = '\033[36m'
+	BLUE = '\033[94m'
+	GREEN = '\033[92m'
+	YELLOW = '\033[93m'
+	RED = '\033[91m'
+	BOLD = '\033[1m'
+	UNDERLINE = '\033[4m'
+	END = '\033[0m'
 
 
 def make_directory(Path: str) -> None:
@@ -59,7 +47,6 @@ def initial_boot() -> None:
 	time.sleep(0.1)
 	make_directory(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/movie")
 	make_directory(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/tv")
-	make_directory(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/episode")
 
 	make_file(f"{USER_HOME_FOLDER}/.config/pymovie/settings.json")
 
@@ -73,4 +60,11 @@ def initial_boot() -> None:
 
 	time.sleep(0.1)
 	download_engine.download_lib()
+
+	print()
+	print(f"{COLOR.BOLD}\b > Setup completed{COLOR.END}")
+	print(f" > To exit application when using, press [Return/Enter], multiple times if necessary")
+	print(f" > To force quit application, press Ctrl+C (macOS and Windows)")
+	print(f" >")
+	input(f" > Press [Return/Enter] to enter application...")
 

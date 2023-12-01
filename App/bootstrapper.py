@@ -3,35 +3,22 @@ import sys
 import time
 import shutil
 import pathlib
-import contextlib
 
 
 USER_HOME_FOLDER = str(pathlib.Path.home())
 
 
 class COLOR:
-	if sys.platform == "win32": 
-		PURPLE = ''
-		CYAN = ''
-		DARKCYAN = ''
-		BLUE = ''
-		GREEN = ''
-		YELLOW = ''
-		RED = ''
-		BOLD = ''
-		UNDERLINE = ''
-		END = ''
-	else: 
-		PURPLE = '\033[95m'
-		CYAN = '\033[96m'
-		DARKCYAN = '\033[36m'
-		BLUE = '\033[94m'
-		GREEN = '\033[92m'
-		YELLOW = '\033[93m'
-		RED = '\033[91m'
-		BOLD = '\033[1m'
-		UNDERLINE = '\033[4m'
-		END = '\033[0m'
+	PURPLE = '\033[95m'
+	CYAN = '\033[96m'
+	DARKCYAN = '\033[36m'
+	BLUE = '\033[94m'
+	GREEN = '\033[92m'
+	YELLOW = '\033[93m'
+	RED = '\033[91m'
+	BOLD = '\033[1m'
+	UNDERLINE = '\033[4m'
+	END = '\033[0m'
 
 
 def delete_directory_recursive(Path: str):
