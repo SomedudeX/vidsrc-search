@@ -1,4 +1,6 @@
-#### This project is created with the help of the following libraries...
+#### This project is created with the help of the following libraries and assets...
+
+https://icon-library.com/images/circle-icon-png/circle-icon-png-8.jpg
 
 https://pypi.org/project/thefuzz/
 

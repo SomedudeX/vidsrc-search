@@ -31,6 +31,8 @@ def do_mainloop():
 		main.mainloop()
 	except KeyboardInterrupt:
 		print_exit_msg()
+	else: 
+		print_exit_msg()
 
 def print_exit_msg():
 	clear()
