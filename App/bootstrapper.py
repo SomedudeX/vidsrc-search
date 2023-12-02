@@ -4,7 +4,6 @@ import time
 import shutil
 import pathlib
 
-from psutil import Process
 
 USER_HOME_FOLDER = str(pathlib.Path.home())
 
@@ -42,14 +41,16 @@ def clear():
 
 def initialize(): 
 	import os
-	TerminalPID = os.getppid()
-	TerminalType = Process(TerminalPID).name()
+	import json
+	with open(f"{USER_HOME_FOLDER}/.config/pymovie/settings.json", "r") as s:
+		Settingsfile = json.load(s)
 
 	try:
 		print(" [Log] Checking for required libraries... ")
 		import thefuzz
 		import imdb
 		import requests
+		from psutil import Process
 	except ImportError as e:
 		print()
 		print(f"{COLOR.BOLD}{COLOR.RED}\b [Error] Required package not installed: {str(e).lower()}")
@@ -59,10 +60,23 @@ def initialize():
 		input(f" > Press [Enter/Return] to quit... {COLOR.END}")
 		sys.exit(0)
 
+	TerminalPID = os.getppid()
+	TerminalType = Process(TerminalPID).name()
+
+	if TerminalType == "cmd.exe" and Settingsfile["supress_startup_warning"] == False:
+		print(f"{COLOR.YELLOW}\b [Warning] Running this program in Windows cmd could result in unexpected behavior")
+		print(f" > or suboptimal experience (e.g. slow download speeds/no color output)")
+		print(f" > Consider using Windows Powershell instead")
+		print(f" > ")
+		Supress_Warning = input(f" > Press [Shift+S+Enter] to supress this warning, or [Enter/Return] to continue...")
+
+		if Supress_Warning == "S":
+			Settingsfile["supress_startup_warning"] == False
+
+			with open(f"{USER_HOME_FOLDER}/.config/pymovie/settings.json", "w") as s:
+				json.dump(Settingsfile, s, indent=4)
 
 	print(" [Log] Checking for initial boot... ")
-	import os
-	import json
 	import firstboot
 	import download_engine
 	if not os.path.exists(f"{USER_HOME_FOLDER}/.config/pymovie") or not os.path.exists(f"{USER_HOME_FOLDER}/.config/pymovie/settings.json") or not os.path.exists(f"{USER_HOME_FOLDER}/.config/pymovie/lib.json") or not os.path.exists(f"{USER_HOME_FOLDER}/.config/pymovie/buffer"):
@@ -85,22 +99,10 @@ def initialize():
 	print(" [Log] Verifying library...")
 	make_directory(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/movie")
 	make_directory(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/tv")
-	with open(f"{USER_HOME_FOLDER}/.config/pymovie/settings.json", "r") as s:
-		Settingsfile = json.load(s)
-		if Settingsfile["downloaded_lib"] == False:
-			print(f"{COLOR.RED}\b [Log] Library not detected... {COLOR.END}")
-			download_engine.download_lib()
-	if TerminalType == "cmd.exe" and Settingsfile["supress_startup_warning"] == False:
-		print(f"{COLOR.YELLOW}\b [Warning] Running this program in Windows cmd could result in unexpected behavior")
-		print(f" > Consider using Windows Powershell instead")
-		print(f" > ")
-		Supress_Warning = input(f" > Press [Shift+S+Enter] to supress this warning, or [Enter/Return] to continue...")
-
-		if Supress_Warning == "S":
-			Settingsfile["supress_startup_warning"] == False
-
-			with open(f"{USER_HOME_FOLDER}/.config/pymovie/settings.json", "w") as s:
-				json.dump(Settingsfile, s, indent=4)
+	
+	if Settingsfile["downloaded_lib"] == False:
+		print(f"{COLOR.RED}\b [Log] Library not detected... {COLOR.END}")
+		download_engine.download_lib()
 
 	print(f"{COLOR.GREEN}{COLOR.BOLD}\b\b [Log] Bootstrapper finished", COLOR.END)
 
