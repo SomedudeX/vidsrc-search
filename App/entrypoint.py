@@ -1,7 +1,7 @@
 import os
+import sys
 import bootstrapper
 
-from sys import platform
 from time import sleep as wait
 from sys import exit as terminate
 from multiprocessing import freeze_support as fix_pyinstaller_multiprocessing_issue
@@ -33,7 +33,7 @@ class COLOR:
 
 def clear():
 
-	if platform == "win32":
+	if sys.platform == "win32":
 		os.system("cls")
 	else: 
 		os.system("clear")
@@ -55,7 +55,7 @@ if __name__ == "__main__":
 	clear()
 	print(" [Log] Terminated by user request...")
 	print(" [Log] Finishing script...")
-	if platform == "win32":
+	if sys.platform == "win32":
 		print()
 		print(" > Press [Return/Enter] to quit...")
 	terminate(0)
