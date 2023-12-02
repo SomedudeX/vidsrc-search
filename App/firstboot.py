@@ -60,6 +60,7 @@ def initial_boot() -> None:
 		s.write(json.dumps(preset_settings, indent=4))
 
 	time.sleep(0.1)
+	print(f"{COLOR.BOLD}\b [Log] Downloading Library (this may take a while){COLOR.END}...")
 	download_engine.download_lib()
 
 	print()

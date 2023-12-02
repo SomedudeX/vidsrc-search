@@ -2,20 +2,6 @@ import os
 import sys
 import bootstrapper
 
-from time import sleep as wait
-from sys import exit as terminate
-from multiprocessing import freeze_support as fix_pyinstaller_multiprocessing_issue
-
-try: 
-	from colorama import just_fix_windows_console as fix_windows_color_output
-except ImportError as e:
-	print(f" [Error] Required package not installed: {str(e).lower()}")
-	print(f" > Program cannot continue, make sure you have installed all required packages in your current python version. ({sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro})")
-	print(f" > All required packages can be installed through 'pip' (Windows) or 'pip3' (macOS/Linux) command. ")
-	print(f" > ")
-	input(f" > Press [Enter/Return] to quit... ")
-	sys.exit(1)
-
 
 class COLOR:
 
@@ -39,23 +25,28 @@ def clear():
 		os.system("clear")
 
 
-if __name__ == "__main__": 
-	fix_windows_color_output()
-	fix_pyinstaller_multiprocessing_issue()
-	clear()
-	print(f"{COLOR.BOLD}\b [Log] Initializing bootstrapper{COLOR.END}")
-	wait(0.5)
-	bootstrapper.initialize()
+def do_mainloop():
+	import main
+	try:
+		main.mainloop()
+	except KeyboardInterrupt:
+		print_exit_msg()
 
-	from main import mainloop
-	print(f"{COLOR.BOLD}\b [Log] Entering mainloop{COLOR.END}")
-	wait(0.2)
-	try: mainloop()
-	except: pass
+def print_exit_msg():
 	clear()
 	print(" [Log] Terminated by user request...")
 	print(" [Log] Finishing script...")
 	if sys.platform == "win32":
 		print()
-		print(" > Press [Return/Enter] to quit...")
-	terminate(0)
+		input(" > Press [Return/Enter] to quit...")
+
+
+if __name__ == "__main__": 
+	clear()
+	print(" [Log] Initializing bootstrapper")
+	bootstrapper.initialize()
+
+	print("[Log] Entering mainloop")
+	do_mainloop()
+	sys.exit(0)
+

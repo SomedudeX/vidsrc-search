@@ -186,7 +186,6 @@ def unite_jsons(MovieIndex: int, TVIndex: int) -> None:
 def download_lib() -> None:
 
 	StartTime = time.time()
-	print(f"{COLOR.BOLD}\b [Log] Downloading Library (this may take a while){COLOR.END}...")
 	MovieIndex = download_movies()
 	TVIndex = download_tv()
 	print(f"{COLOR.GREEN}{COLOR.BOLD}\b\b [Log] Download complete {COLOR.END}")
