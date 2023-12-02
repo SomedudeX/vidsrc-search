@@ -18,6 +18,7 @@ If you are running Linux (or for whatever reason you want extra hassle), and you
 * Cinemagoer
 * Requests
 * TheFuzz
+* PSUtil
 * PyInstaller
 
 Next, clone the repository by running the following commands: 

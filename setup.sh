@@ -1,3 +1,5 @@
+#!/bin/bash
+
 exec 3>&1
 msg () {
     echo " [Log] $@" >&3

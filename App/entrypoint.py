@@ -1,8 +1,9 @@
+import os
+import bootstrapper
+
 from sys import platform
 from time import sleep as wait
 from sys import exit as terminate
-from os import system as shell_command
-from bootstrapper import initialize as init_bootstrapper
 from multiprocessing import freeze_support as fix_pyinstaller_multiprocessing_issue
 from colorama import just_fix_windows_console as fix_windows_color_output
 
@@ -24,9 +25,9 @@ class COLOR:
 def clear():
 
 	if platform == "win32":
-		shell_command("cls")
+		os.system("cls")
 	else: 
-		shell_command("clear")
+		os.system("clear")
 
 
 if __name__ == "__main__": 
@@ -34,18 +35,18 @@ if __name__ == "__main__":
 	fix_pyinstaller_multiprocessing_issue()
 	clear()
 	print(f"{COLOR.BOLD}\b [Log] Initializing bootstrapper{COLOR.END}")
-	try: wait(0.5)
-	except: pass
-	init_bootstrapper()
+	wait(0.5)
+	bootstrapper.initialize()
 
 	from main import mainloop
 	print(f"{COLOR.BOLD}\b [Log] Entering mainloop{COLOR.END}")
-	try: wait(0.2)
-	except: pass
+	wait(0.2)
 	try: mainloop()
 	except: pass
 	clear()
 	print(" [Log] Terminated by user request...")
 	print(" [Log] Finishing script...")
-	wait(0.2)
+	if platform == "win32":
+		print()
+		print(" > Press [Return/Enter] to quit...")
 	terminate(0)

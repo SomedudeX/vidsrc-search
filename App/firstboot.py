@@ -54,6 +54,7 @@ def initial_boot() -> None:
 	with open(f"{USER_HOME_FOLDER}/.config/pymovie/settings.json", "w") as s:
 		preset_settings = {
 		    "downloaded_lib": False,
+		    "supress_startup_warning": False
 		}
 
 		s.write(json.dumps(preset_settings, indent=4))

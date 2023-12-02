@@ -4,6 +4,7 @@ import time
 import shutil
 import pathlib
 
+from psutil import Process
 
 USER_HOME_FOLDER = str(pathlib.Path.home())
 
@@ -40,6 +41,10 @@ def clear():
 
 
 def initialize(): 
+	import os
+	TerminalPID = os.getppid()
+	TerminalType = Process(TerminalPID).name()
+
 	try:
 		print(" [Log] Checking for required libraries... ")
 		import thefuzz
@@ -85,6 +90,18 @@ def initialize():
 		if Settingsfile["downloaded_lib"] == False:
 			print(f"{COLOR.RED}\b [Log] Library not detected... {COLOR.END}")
 			download_engine.download_lib()
+	if TerminalType == "cmd.exe" and Settingsfile["supress_startup_warning"] == False:
+		print(f"{COLOR.YELLOW}\b [Warning] Running this program in Windows cmd could result in unexpected behavior")
+		print(f" > Consider using Windows Powershell instead")
+		print(f" > ")
+		Supress_Warning = input(f" > Press [Shift+S+Enter] to supress this warning, or [Enter/Return] to continue...")
+
+		if Supress_Warning == "S":
+			Settingsfile["supress_startup_warning"] == False
+
+			with open(f"{USER_HOME_FOLDER}/.config/pymovie/settings.json", "w") as s:
+				json.dump(Settingsfile, s, indent=4)
+
 	print(f"{COLOR.GREEN}{COLOR.BOLD}\b\b [Log] Bootstrapper finished", COLOR.END)
 
 
