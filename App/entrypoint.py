@@ -5,7 +5,16 @@ from sys import platform
 from time import sleep as wait
 from sys import exit as terminate
 from multiprocessing import freeze_support as fix_pyinstaller_multiprocessing_issue
-from colorama import just_fix_windows_console as fix_windows_color_output
+
+try: 
+	from colorama import just_fix_windows_console as fix_windows_color_output
+except ImportError as e:
+	print()
+	print(" [Error] Required package not installed: {str(e).lower()}")
+	print(" > Program cannot continue, make sure you have installed all required packages in your current python version. ({sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro})")
+	print(" > All required packages can be installed through 'pip' (Windows) or 'pip3' (macOS/Linux) command. ")
+	print(" > ")
+	input(" > Press [Enter/Return] to quit... ")
 
 
 class COLOR:
