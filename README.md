@@ -1,37 +1,52 @@
 ## Pymovie
 
-PyMovie is a terminal utility program that searches [VidSrc](vidsrc.to)'s API to provide movies for free. 
+PyMovie is a terminal utility program that searches [VidSrc](vidsrc.to)'s API to provide movies for free. This exists purely as a proof of concept idea as opposed to a production ready application. Additionally, there exists a virtually unfixable multiprocessing bug on Windows that causes the compiled executable to download files unusually slowly. 
 
-### Installation
+## Installation
 
 **Automatic**
 
-The installation and setup is relatively simple; download the latest version of PyMovie tailored to your operating system, then double click on the application executable. The setup process should automatically begin configuring your system and downloading movie libraries. 
+Download the latest version of PyMovie tailored to your operating system from the releases tab, then double click on the application executable. The setup process should automatically begin configuring your system and downloading movie libraries. 
 
 > [!NOTE]
-> The movie library that the program downloads is simply a json file. Although it might take a while, which is due to having to constantly switch downloads (VidSrc stores their library in more than 2000 json files), rest assured that the program is not filling your disk with massive files without your consent. Additionally, the program will report the amount of space that it had used at the end of the download. 
+> The movie library that the program downloads is simply a json file. Although it might take a while, rest assured that the program is not filling your disk with massive files without your consent. Additionally, the program will report the amount of space that it had used at the end of the download. 
 
 **Manual (Linux/macOS only)**
 
-If you are running Linux (or for whatever reason you want extra hassle), and you need to install the program manually, you need to download a couple of packages first. All of these packages can all be downloaded through `pip3`:
-
-* Cinemagoer
-* Requests
-* TheFuzz
-* PSUtil
-* PyInstaller
-
-Next, clone the repository by running the following commands: 
+- Install Python 3
+- Clone the repository
 
 ```bash
 git clone https://github.com/SomedudeX/PyMovie
 cd PyMovie
 ```
 
-You could stop here and use the python script as it is by running `App/entrypoint.py`, but if you would like to build the project into an executable, then you will need to install PyInstaller. Then, you can build the project by either running `./setup.sh` or manually typing `pyinstaller App/entrypoint.py -onefile --name PyMovie`. 
+- Install required packages
+
+```bash
+pip3 install -r requirements.txt
+```
+
+You could stop here and use the python script as it is by running `python3 App/entrypoint.py`, but if wish to build the project into an executable, follow the steps below:
+
+- Install PyInstaller
+```bash
+pip3 install pyinstaller
+```
+
+- Build the project by running
+
+```bash
+./setup.sh
+``` 
 
 The output file will then be created in the dist folder. 
 
-### Development
+## Uninstallation
+Use the reset option from within the application (Windows/macOS/Linux) or run `uninstall.sh` (macOS/Linux) to delete all configuration files pertinent to the application. 
 
-This app is more of a side-project, hence development would mostly be bug fixes. That said, you are welcomed to make a pull request and contribute to it. A fair warning though that the codebase was hacked together hastefully, which means that some of it will need quite a bit of refactoring to be readable and maintainable. 
+--
+
+Last updated Jan 2024
+
+Not in active development

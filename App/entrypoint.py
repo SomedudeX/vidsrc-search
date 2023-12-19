@@ -34,6 +34,7 @@ def do_mainloop():
 	else: 
 		print_exit_msg()
 
+
 def print_exit_msg():
 	clear()
 	print(" [Log] Terminated by user request...")
@@ -48,7 +49,7 @@ if __name__ == "__main__":
 	print(" [Log] Initializing bootstrapper")
 	bootstrapper.initialize()
 
-	print("[Log] Entering mainloop")
+	print(" [Log] Entering mainloop")
 	do_mainloop()
 	sys.exit(0)
 

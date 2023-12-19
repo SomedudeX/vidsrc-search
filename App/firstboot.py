@@ -65,8 +65,7 @@ def initial_boot() -> None:
 
 	print()
 	print(f"{COLOR.BOLD}\b > Setup completed{COLOR.END}")
-	print(f" > To exit application when using, press [Return/Enter], multiple times if necessary")
-	print(f" > To force quit application, press Ctrl+C (macOS and Windows)")
+	print(f" > Enter '--help' or '-h' anywhere inside this application for a list of commands")
 	print(f" >")
-	input(f" > Press [Return/Enter] to enter application...")
+	input(f" > Press [Return/Enter] to continue...")
 

@@ -5,11 +5,37 @@ import time
 import pathlib
 import requests
 
-from multiprocessing import Process
+
 from shutil import rmtree
+from multiprocessing import freeze_support
+from multiprocessing import Process as Process
 
 
 USER_HOME_FOLDER = str(pathlib.Path.home())
+
+# try:
+# 	if sys.platform == "win32":
+# 		import multiprocessing.popen_spawn_win32 as forking
+# 	else:
+# 		import multiprocessing.popen_fork as forking
+# except ImportError:
+# 	import multiprocessing.forking as forking
+# class _Popen(forking.Popen):
+# 	def __init__(self, *args, **kw):
+# 		if hasattr(sys, 'frozen'):
+# 			os.putenv('_MEIPASS2', sys._MEIPASS)
+# 		try:
+# 			super(_Popen, self).__init__(*args, **kw)
+# 		finally:
+# 			if hasattr(sys, 'frozen'):
+# 				if hasattr(os, 'unsetenv'):
+# 					os.unsetenv('_MEIPASS2')
+# 				else:
+# 					os.putenv('_MEIPASS2', '')
+
+# class Process(mProcess):
+# 	_Popen = _Popen
+
 
 
 class COLOR:
@@ -27,6 +53,7 @@ class COLOR:
 
 def delete_directory_recursive(Path: str):
 	rmtree(Path)
+
 
 def is_multiple_of_96(Index: int) -> bool:
 	if Index % 96 != 0:
@@ -49,6 +76,7 @@ def clean_up_processes(Processes: list, Index: int) -> list:
 			Processes[i].close()
 		except ValueError: 
 			pass
+
 
 def check_download_finish(DESTINATION_URL: str, Index: int) -> bool:
 	if len(requests.get(f"{DESTINATION_URL}/{Index}").content) < 50:
@@ -209,3 +237,4 @@ def download_lib() -> None:
 	print(f" > Took {get_folder_size(f'{USER_HOME_FOLDER}/.config/pymovie')}mb of space")
 	print()
 	input(" > Press [Enter/Return] to continue...")
+

@@ -1,0 +1,4 @@
+cinemagoer
+requests
+thefuzz
+psutil

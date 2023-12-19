@@ -140,7 +140,6 @@ def initialize():
 	if is_windows_cmd() and Settingsfile["supress_startup_warning"] == False:
 		print()
 		print(f"{COLOR.YELLOW}\b [Warning] Running this program in Windows cmd could result in unexpected behavior")
-		print(f" > or suboptimal experience (e.g. slow download speeds/no color output)")
 		print(f" > Consider using Windows Powershell instead")
 		print(f" > ")
 		Supress_Warning = input(f" > Press [Shift+S+Enter] to supress this warning, or [Enter/Return] to continue...{COLOR.END}")
