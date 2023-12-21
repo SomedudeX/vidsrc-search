@@ -105,7 +105,7 @@ def parse_entry(Entry: dict) -> dict:
 		Season = Entry["season"]
 	if "number" in Entry: 
 		Episode = Entry["number"]
-
+	
 	return ParsedEntry
 
 
@@ -217,9 +217,9 @@ def download_lib() -> None:
 	MovieIndex = download_movies()
 	TVIndex = download_tv()
 	print(f"{COLOR.GREEN}{COLOR.BOLD}\b\b [Log] Download complete {COLOR.END}")
-
+	
 	unite_jsons(MovieIndex, TVIndex)
-
+	
 	print(" [Log] Writing to settings... (Step 5/5)")
 	with open(f"{USER_HOME_FOLDER}/.config/pymovie/settings.json", "r") as s: 
 		Settings = json.loads(s.read())

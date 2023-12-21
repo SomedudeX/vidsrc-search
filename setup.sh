@@ -5,7 +5,7 @@ msg () {
     echo "$@" >&3
 }
 
-cd $(dirname "$0")
+cd "$(dirname "$0")" || return
 
 if [ ! -f App/entrypoint.py ]; then
     msg " [Error] PyMovie not found"

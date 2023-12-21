@@ -15,14 +15,11 @@ Download the latest version of PyMovie tailored to your operating system from th
 
 - Install Python 3
 - Clone the repository
-
 ```bash
 git clone https://github.com/SomedudeX/PyMovie
 cd PyMovie
 ```
-
 - Install required packages
-
 ```bash
 pip3 install -r requirements.txt
 ```
@@ -33,13 +30,10 @@ You could stop here and use the python script as it is by running `python3 App/e
 ```bash
 pip3 install pyinstaller
 ```
-
 - Build the project by running
-
 ```bash
 ./setup.sh
-``` 
-
+```
 The output file will then be created in the dist folder. 
 
 ## Uninstallation
@@ -47,6 +41,7 @@ Use the reset option from within the application (Windows/macOS/Linux) or run `u
 
 --
 
-Last updated Jan 2024
-
+```
+Last updated Jan 2024  
 Not in active development
+```
