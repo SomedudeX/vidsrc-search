@@ -54,7 +54,7 @@ def write_to_settings(settings: dict) -> None:
 def check_initial_boot():
 	if is_first_boot():
 		print(f"{COLOR.BOLD}\b [Log] Initial boot detected {COLOR.END}")
-		try: 
+		try:
 			firstboot.initial_boot()
 		except KeyboardInterrupt:
 			handle_keyboard_interrupt()
@@ -63,7 +63,7 @@ def check_initial_boot():
 def clear():
 	if sys.platform == "darwin":
 		os.system("clear")
-	else: 
+	else:
 		os.system("cls")
 
 
@@ -102,6 +102,7 @@ def is_first_boot() -> bool:
 		return True
 	if not os.path.exists(f"{USER_HOME_FOLDER}/.config/pymovie/buffer"):
 		return True
+	return False
 
 
 def handle_keyboard_interrupt() -> None:
@@ -112,14 +113,14 @@ def handle_keyboard_interrupt() -> None:
 	print(f" [Log] Files cleaned up...")
 	print(f" [Log] Exiting safely...")
 	print()
-	if os.path.exists(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/movie"): 
+	if os.path.exists(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/movie"):
 		delete_directory_recursive(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/movie")
-	if os.path.exists(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/tv"): 
+	if os.path.exists(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/tv"):
 		delete_directory_recursive(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/tv")
 	sys.exit()
 
 
-def initialize(): 
+def initialize():
 	print(" [Log] Checking for required libraries... ")
 	check_required_libraries()
 
@@ -130,7 +131,7 @@ def initialize():
 
 	print(" [Log] Checking for initial boot... ")
 	check_initial_boot()
-	
+
 	make_directory(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/movie")
 	make_directory(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/tv")
 
@@ -152,11 +153,9 @@ def initialize():
 	if Settingsfile["downloaded_lib"] == False:
 		print(f"{COLOR.RED}\b [Log] Library not detected... {COLOR.END}")
 		print(f"{COLOR.BOLD}\b [Log] Downloading Library (this may take a while){COLOR.END}...")
-		try: 
+		try:
 			download_engine.download_lib()
 		except KeyboardInterrupt:
 			handle_keyboard_interrupt()
 
 	print(f"{COLOR.GREEN}{COLOR.BOLD}\b\b [Log] Bootstrapper finished", COLOR.END)
-
-
