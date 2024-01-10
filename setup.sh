@@ -1,11 +1,20 @@
-#!/bin/bash
+#!/bin/sh
 
 exec 3>&1
 msg () {
     echo "$@" >&3
 }
 
-cd "$(dirname "$0")" || return
+if [ ! -e "$(dirname "$0")" ]; then
+    msg " [Error] Script location cannot be found"
+    msg " > Something could be really messed up on your system!"
+    msg " >"
+    msg " > Script terminating..."
+    read
+    exit 1
+else
+    cd "$(dirname "$0")"
+fi
 
 if [ ! -f App/entrypoint.py ]; then
     msg " [Error] PyMovie not found"
@@ -27,5 +36,6 @@ fi
 
 msg " [Log] Cleaning up"
 rm PyMovie.spec
+rm setup.log
 msg " [Log] Wrote to dist/PyMovie"
 exit 0

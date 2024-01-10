@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 if [ ! -f ~/.config/pymovie ]; then
 	echo " [Error] PyMovie configuration not found"

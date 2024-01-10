@@ -1,4 +1,4 @@
-cinemagoer
-requests
-thefuzz
-psutil
+cinemagoer>=2023.5.1
+requests>=2.31.0
+thefuzz>=0.20.0
+psutil>=5.9.6
