@@ -1,6 +1,25 @@
 ## Pymovie
 
-PyMovie is a terminal utility program that searches [VidSrc](vidsrc.to)'s API to provide movies for free. This exists purely as a proof of concept idea as opposed to a production ready application. Additionally, there exists a virtually unfixable multiprocessing bug on Windows that causes the compiled executable to download files unusually slowly. 
+PyMovie is a terminal utility program that searches [VidSrc](vidsrc.to)'s API to provide movies for free. This exists purely as a proof of concept idea as opposed to a production ready application. 
+
+**Latest release notes (v1.0.1)**
+
+- Added help screen
+- Added update engine
+- Added global commands
+- Improved download speeds (Windows)
+- Improved verbosity and user feedback
+- Various bug fixes and minor improvements
+
+**Operating systems support**
+
+| OS      | Executable   | Script       |
+|---------|--------------|--------------|
+| Windows | Up to v1.0.0 | Up to v1.0.1 |
+| macOS   | Up to v1.0.1 | Up to v1.0.1 |
+| Linux   | No support   | Up to v1.0.1 |
+
+The v1.0.0 bundled executable file for Windows has some multiprocessing issues, causing the download to be abnormally slow. 
 
 ## Installation
 
@@ -30,14 +49,18 @@ You could stop here and use the python script as it is by running `python3 App/e
 ```bash
 pip3 install pyinstaller
 ```
-- Build the project by running
+- "Build" the project by running
 ```bash
 ./setup.sh
 ```
 The output file will then be created in the dist folder. 
 
 ## Uninstallation
-Use the reset option from within the application (Windows/macOS/Linux) or run `uninstall.sh` (macOS/Linux) to delete all configuration files pertinent to the application. 
+Use the reset option from within the application (Windows/macOS/Linux) or run `uninstall.sh` (macOS/Linux) to delete all configuration files and caches pertinent to the application. 
+
+## Disclaimer
+
+The author of this project shall, under no circumstance, take liability or responsibility for losses or damages incurred as a result of your use of this application. Your use and reliance on this program is solely at your own risk. 
 
 --
 
