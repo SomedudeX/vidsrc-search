@@ -18,7 +18,6 @@ class COLOR:
 
 
 def clear():
-
 	if sys.platform == "win32":
 		os.system("cls")
 	else: 
@@ -27,17 +26,14 @@ def clear():
 
 def do_mainloop():
 	import main
-	try:
-		main.mainloop()
-	except KeyboardInterrupt:
-		print_exit_msg()
-	else: 
-		print_exit_msg()
+	while True:
+		if main.mainloop() == 1:
+			break
 
 
 def print_exit_msg():
 	clear()
-	print(" [Log] Terminated by user request...")
+	print(" [Log] Terminated per user request...")
 	print(" [Log] Finishing script...")
 	if sys.platform == "win32":
 		print()
@@ -45,11 +41,15 @@ def print_exit_msg():
 
 
 if __name__ == "__main__": 
-	clear()
-	print(" [Log] Initializing bootstrapper")
-	bootstrapper.initialize()
+	try: 
+		clear()
+		print(" [Log] Initializing bootstrapper")
+		bootstrapper.initialize()
 
-	print(" [Log] Entering mainloop")
-	do_mainloop()
-	sys.exit(0)
+		print(" [Log] Entering mainloop")
+		do_mainloop()
+		print_exit_msg()
+		sys.exit(0)
+	except KeyboardInterrupt:
+		print_exit_msg()
 

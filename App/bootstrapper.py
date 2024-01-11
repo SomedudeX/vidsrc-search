@@ -8,9 +8,6 @@ import firstboot
 import download_engine
 
 
-from multiprocessing import freeze_support as patch_mp_issue
-
-
 USER_HOME_FOLDER = str(pathlib.Path.home())
 
 
@@ -110,13 +107,15 @@ def handle_keyboard_interrupt() -> None:
 	clear()
 	print(f"{COLOR.BOLD}{COLOR.RED}\b\b [Error] User terminated operation {COLOR.END}")
 	print(f" [Log] Destroying cached files so as to not damage installation...")
-	print(f" [Log] Files cleaned up...")
-	print(f" [Log] Exiting safely...")
-	print()
+
 	if os.path.exists(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/movie"):
 		delete_directory_recursive(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/movie")
 	if os.path.exists(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/tv"):
 		delete_directory_recursive(f"{USER_HOME_FOLDER}/.config/pymovie/buffer/tv")
+
+	print(f" [Log] Files cleaned up...")
+	print(f" [Log] Exiting safely...")
+	print()
 	sys.exit()
 
 
@@ -126,7 +125,6 @@ def initialize():
 
 	from colorama import just_fix_windows_console as patch_win_console
 	print(" [Log] Applying patches")
-	patch_mp_issue()
 	patch_win_console()
 
 	print(" [Log] Checking for initial boot... ")
@@ -141,13 +139,18 @@ def initialize():
 	if is_windows_cmd() and Settingsfile["supress_startup_warning"] == False:
 		print()
 		print(f"{COLOR.YELLOW}\b [Warning] Running this program in Windows cmd could result in unexpected behavior")
-		print(f" > Consider using Windows Powershell instead")
+		print(f" > Consider settings your default shell to Windows Powershell instead")
 		print(f" > ")
-		Supress_Warning = input(f" > Press [Shift+S+Enter] to supress this warning, or [Enter/Return] to continue...{COLOR.END}")
+		Supress_Warning = input(f" > Input \"--supress-warning\" to supress this warning for future use, or press [Enter/Return] to continue... {COLOR.END}")
 		print()
-		if Supress_Warning == "S":
+		if Supress_Warning == "--supress-warning":
 			Settingsfile["supress_startup_warning"] == True
 			write_to_settings(Settingsfile)
+			print(f" > Warning supressed for future startups")
+			time.sleep(1)
+		else: 
+			print(f" > Continuing without supressing warning...")
+			time.sleep(1)
 
 	print(" [Log] Verifying library...")
 	if Settingsfile["downloaded_lib"] == False:
@@ -157,5 +160,7 @@ def initialize():
 			download_engine.download_lib()
 		except KeyboardInterrupt:
 			handle_keyboard_interrupt()
+	else:
+		print(f" [Log] Library verified")
 
 	print(f"{COLOR.GREEN}{COLOR.BOLD}\b\b [Log] Bootstrapper finished", COLOR.END)

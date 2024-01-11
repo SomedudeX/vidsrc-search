@@ -7,7 +7,6 @@ import requests
 
 
 from shutil import rmtree
-from multiprocessing import freeze_support
 from multiprocessing import Process as Process
 
 
@@ -100,11 +99,6 @@ def parse_entry(Entry: dict) -> dict:
 		"URL": Entry["embed_url_imdb"], 
 		"ID": Entry["imdb_id"],
 	}
-
-	if "season" in Entry: 
-		Season = Entry["season"]
-	if "number" in Entry: 
-		Episode = Entry["number"]
 	
 	return ParsedEntry
 
