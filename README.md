@@ -16,7 +16,7 @@ PyMovie is a terminal utility program that searches [VidSrc](vidsrc.to)'s API to
 | OS      | Executable   | Script       |
 |---------|--------------|--------------|
 | Windows | Up to v1.0.0 | Up to v1.0.1 |
-| macOS   | Up to v1.0.1 | Up to v1.0.1 |
+| macOS   | Up to v1.0.0 | Up to v1.0.1 |
 | Linux   | No support   | Up to v1.0.1 |
 
 The v1.0.0 bundled executable file for Windows has some multiprocessing issues, causing the download to be abnormally slow. 
