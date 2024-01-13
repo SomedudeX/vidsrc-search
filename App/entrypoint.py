@@ -2,6 +2,8 @@ import os
 import sys
 import bootstrapper
 
+from multiprocessing import freeze_support as patch_mp
+
 
 class COLOR:
 
@@ -42,6 +44,7 @@ def print_exit_msg():
 
 if __name__ == "__main__": 
 	try: 
+		patch_mp()
 		clear()
 		print(" [Log] Initializing bootstrapper")
 		bootstrapper.initialize()
