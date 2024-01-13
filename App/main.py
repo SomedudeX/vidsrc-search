@@ -4,7 +4,6 @@ The main loop of the PyMovie program
 
 import os
 import sys
-import time
 import pathlib
 import uninstall
 import webbrowser
