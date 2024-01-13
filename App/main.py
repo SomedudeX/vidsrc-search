@@ -40,10 +40,10 @@ HELP_MSG = f"{COLOR.BOLD} 															 \n\
  > '-h', '--help'                    Displays this panel                             \n\
  > '-a', '--acknowledgements'        Displays acknowledgements page                  \n\
  > '-q', '--quit'                    Quits the application                           \n\
- > '-u', '--update' 				 Opens the update engine to update the json	lib  \n\
+ > '-u', '--update'                  Opens the update engine to update the json lib  \n\
  > '-r', '--reset'                   Remove all traces of the application and resets \n\
  >                                   PyMovie to its original settings. Does not      \n\
- > 									 remove the application bundle/script itself	 \n\
+ > 									 remove the application bundle/script itself     \n\
  >                                                                                   \n\
  > In addition, submitting nothing to an input field (i.e. pressing [Return/Enter]   \n\
  > in an input field) will result in going back up a page. If the PyMovie is already \n\
