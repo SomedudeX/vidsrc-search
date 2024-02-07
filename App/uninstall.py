@@ -1,5 +1,6 @@
 import os
 import time
+import shutil
 import pathlib
 
 
@@ -8,7 +9,7 @@ USER_HOME_FOLDER = str(pathlib.Path.home())
 
 def delete_directory(Path: str) -> None:
 	if os.path.exists(Path):
-		os.rmdir(Path)
+		shutil.rmtree(Path)
 
 
 def remove_file(Path: str) -> None:

@@ -58,11 +58,11 @@ Use the reset option from within the application (Windows/macOS/Linux) or run `u
 
 ## Disclaimer
 
-The author of this project shall, under no circumstance, take liability or responsibility for losses or damages incurred as a result of your use of this application. Your use and reliance on this program is solely at your own risk. 
+The author of this project shall, under no circumstance, take liability or responsibility for losses or damages incurred as a result of your use of this application. Your use and reliance on this program is solely at your own risk. This program is for educational purposes only.
 
 --
 
 ```
-Last updated Jan 2024  
+Last updated Feb 2024  
 Not in active development
 ```

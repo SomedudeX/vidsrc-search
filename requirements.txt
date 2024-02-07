@@ -1,3 +1,4 @@
+colorama>=0.4.6
 cinemagoer>=2023.5.1
 requests>=2.31.0
 thefuzz>=0.20.0

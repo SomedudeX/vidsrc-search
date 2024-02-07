@@ -32,17 +32,16 @@ class COLOR:
 	END = '\033[0m\b'
 
 
-HELP_MSG = f"{COLOR.BOLD} 															 \n\
- > Help                                                     					     \n\
+HELP_MSG = f"{COLOR.BOLD}                                                            \n\
+ > Help                                                                              \n\
  > These commands are universally available in every input field in this application \n\
  >                                                                                   \n\
  > '-h', '--help'                    Displays this panel                             \n\
  > '-a', '--acknowledgements'        Displays acknowledgements page                  \n\
  > '-q', '--quit'                    Quits the application                           \n\
- > '-u', '--update'                  Opens the update engine to update the json lib  \n\
  > '-r', '--reset'                   Remove all traces of the application and resets \n\
  >                                   PyMovie to its original settings. Does not      \n\
- > 									 remove the application bundle/script itself     \n\
+ >                                   remove the application bundle/script itself     \n\
  >                                                                                   \n\
  > In addition, submitting nothing to an input field (i.e. pressing [Return/Enter]   \n\
  > in an input field) will result in going back up a page. If the PyMovie is already \n\
@@ -56,19 +55,21 @@ SEARCH_MOVIE_MSG = f"{COLOR.BOLD} > Search movies:  {COLOR.END}"
 
 def show_acknowledgements() -> None:
 	webbrowser.open("https://github.com/SomedudeX/PyMovie/blob/main/Acknowledgements.md")
+	clear()
 
 
 def clear():
-	if sys.platform == "darwin":
-		os.system("clear")
-	else: 
+	if sys.platform == "win32":
 		os.system("cls")
+	else: 
+		os.system("clear")
 
 
 def show_help() -> None:
 	clear()
 	print(HELP_MSG)
 	input(" > Press [Enter/Return] to continue...")
+	clear()
 
 
 def get_movie(MovieID): 
@@ -79,16 +80,13 @@ def get_movie(MovieID):
 
 
 def show_uninstall_message() -> None:
+	print()
 	Affirm = input(f"{COLOR.RED}{COLOR.BOLD}\b\b > Are you sure you want to reset this program? (Y/n) {COLOR.END}")
 	if Affirm == "Y":
 		uninstall.uninstall()
 		print(" [Log] Program succesfully reset")
 		input(" [Log] Press [Return/Enter] to quit ")
 		sys.exit(0)
-
-
-def show_settings():
-	input("Settings page")
 
 
 def parse_query(query):
@@ -131,15 +129,16 @@ def show_entry(Entries, Action) -> None:
 	print(COLOR.BOLD, "\b > ==== Selected entry ====", COLOR.END)
 	print()
 	print(" > Available actions: ")
-	print(" > [W] Watch the entry in your browser      [I] Get more info on entry")
+	print(" > [1] Watch the entry in your browser      [2] Get more info on entry\n > [Return/Enter] Back a level")
 
 
 def show_unexpected_command(Command) -> None:
 	clear()
 	print(f"{COLOR.RED}{COLOR.BOLD} [Error] Unexpected command entered ({Command})     \n\
  > Please enter a valid command. A list of commands are available via '-h' or '--help' \n\
- >   																				     ")
+ >                                                                                       ")
 	input(f" > Press [Return/Enter] to continue... {COLOR.END}")
+	clear()
 
 
 def show_entry_page(Entries, Action): 
@@ -190,7 +189,7 @@ def show_entry_page(Entries, Action):
 		print(COLOR.BOLD, "\b > ==== Entry details ====", COLOR.END)
 		print()
 		print(" > Available actions: ")
-		print(" > [W] Watch in browser")
+		print(" > [1] Watch in browser                     [Return/Enter] Back a level")
 		Subaction = input(" > Action: ")
 		Subaction = parse_query(Subaction)
 		if Subaction == "W" or Subaction == "w":
@@ -209,6 +208,9 @@ def show_entry_page(Entries, Action):
 				return "continue"
 			elif Subaction == "quit" or Subaction == "q":
 				return "quit"
+			elif Subaction == "reset" or Subaction == "r":
+				show_uninstall_message()
+				return "continue"
 			elif Subaction == "back":
 				return "continue"
 			else:
@@ -228,6 +230,9 @@ def show_entry_page(Entries, Action):
 			return "continue"
 		elif Subaction == "quit" or Subaction == "q":
 			return "quit"
+		elif Subaction == "reset" or Subaction == "r":
+			show_uninstall_message()
+			return "continue"
 		elif Subaction == "back":
 			return "continue"
 		else:
@@ -240,7 +245,8 @@ def show_movies_page(Entries, Query):
 		clear()
 		show_searched_movies(Entries)
 		print(COLOR.BOLD, f"\b > ==== Search results for '{Query}' ====", COLOR.END)
-		Action = input(" > Choose an entry: ")
+		print(f"[1 - {len(Entries)}] Choose an entry        [Return/Enter] Back a level")
+		Action = input(" > Action: ")
 
 		Action = parse_query(Action)
 		if type(Action) is int:
@@ -265,6 +271,9 @@ def show_movies_page(Entries, Query):
 			continue
 		elif Action == "quit" or Action == "q":
 			return "quit"
+		elif Action == "reset" or Action == "r":
+			show_uninstall_message()
+			return "continue"
 		elif Action == "back":
 			return "continue"
 		else:
@@ -273,7 +282,6 @@ def show_movies_page(Entries, Query):
 
 
 def mainloop(): 
-	clear()
 	Query = input(SEARCH_MOVIE_MSG)
 	Action = parse_query(Query)
 
@@ -289,6 +297,9 @@ def mainloop():
 	elif Action == "help" or Action == "h":
 		show_help()
 		return 0
+	elif Action == "reset" or Action == "r":
+		show_uninstall_message()
+		return "continue"
 	elif Action == "quit" or Action == "q":
 		return 1
 	elif Action == "back":
@@ -299,6 +310,7 @@ def mainloop():
 
 
 	if Action == "continue":
+		clear()
 		return 0
 	if Action == "quit" or Action == "q":
 		return 1
@@ -306,5 +318,6 @@ def mainloop():
 		return 1
 	else:
 		show_unexpected_command(Action)
+		clear()
 		return 0
 

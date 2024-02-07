@@ -1,5 +1,7 @@
+#!/usr/bin/env python3
 import os
 import sys
+import time
 import bootstrapper
 
 from multiprocessing import freeze_support as patch_mp
@@ -28,6 +30,11 @@ def clear():
 
 def do_mainloop():
 	import main
+	clear()
+	print(f" > PyMovie succesfully launched with Python {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}")
+	print(f" > Type [Return/Enter] to exit PyMovie or go back up a page")
+	print(f" > Type '-h' or '--help' for help page")
+	print(f" > ")
 	while True:
 		if main.mainloop() == 1:
 			break
@@ -54,5 +61,13 @@ if __name__ == "__main__":
 		print_exit_msg()
 		sys.exit(0)
 	except KeyboardInterrupt:
+		try:
+			print()
+		except KeyboardInterrupt:
+			pass
 		print_exit_msg()
+	except Exception as e:
+		print(f" [Log] An exception occured during the execution of PyMovie")
+		print(f" [Log] Exception message: {str(e).lower()}")
+		print(f" [Log] Terminating script...")
 
