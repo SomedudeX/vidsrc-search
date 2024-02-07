@@ -49,7 +49,7 @@ def print_exit_msg():
 		input(" > Press [Return/Enter] to quit...")
 
 
-if __name__ == "__main__": 
+def pymovie():
 	try: 
 		patch_mp()
 		clear()
