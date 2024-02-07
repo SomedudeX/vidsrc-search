@@ -45,9 +45,15 @@ HELP_MSG = f"{COLOR.BOLD}                                                       
  >                                                                                   \n\
  > In addition, submitting nothing to an input field (i.e. pressing [Return/Enter]   \n\
  > in an input field) will result in going back up a page. If the PyMovie is already \n\
- > in the topmost page, it will quit instead.                                        \n\
+ > in the topmost page, it will quit instead. Using [Ctrl+C] will force-quit PyMovie \n\
+ > under any circumstances, like any other POSIX-compliant CLI                       \n\
  >                                                                                   \n\
- > Additionally, using [Ctrl+C] will force-quit PyMovie under any circumstance       \n\
+ > Disclaimer:                                                                       \n\
+ > This application provides access to third-party websites, which have not been     \n\
+ > monitored for their quality, safety, or authenticity by the author of this app.   \n\
+ > The author will not be responsible for your use of third-party websites, and it   \n\
+ > is highly recommended to install an privacy/ad blocker extension before visiting  \n\
+ > the website.                                                                      \n\
  {COLOR.END}                                                                         \n"
 
 SEARCH_MOVIE_MSG = f"{COLOR.BOLD} > Search movies:  {COLOR.END}"
