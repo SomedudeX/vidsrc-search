@@ -2,12 +2,9 @@
 
 PyMovie is a terminal utility program that searches [VidSrc](vidsrc.to)'s API to provide movies for free. This exists purely as a proof of concept idea as opposed to a production ready application. 
 
-**Latest release notes (v1.0.1)**
+**Latest release notes (v1.0.2)**
 
-- Added help screen
-- Added global commands
-- Improved verbosity and user feedback
-- Various bug fixes and minor improvements
+- Minor enhancements and bugfixes
 
 **Operating systems support**
 
