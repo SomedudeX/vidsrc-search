@@ -1,6 +1,6 @@
 ## Pymovie
 
-PyMovie is a terminal utility program that searches [VidSrc](vidsrc.to)'s API to provide movies for free. This exists purely as a proof of concept idea as opposed to a production ready application. 
+PyMovie is a terminal utility program that searches [VidSrc](https://vidsrc.to)'s API to provide movies for free. This exists purely as a proof of concept idea as opposed to a production ready application. 
 
 **Latest release notes (v1.0.2)**
 
@@ -10,9 +10,9 @@ PyMovie is a terminal utility program that searches [VidSrc](vidsrc.to)'s API to
 
 | OS      | Executable   | Script       |
 |---------|--------------|--------------|
-| Windows | Up to v1.0.0 | Up to v1.0.1 |
-| macOS   | Up to v1.0.1 | Up to v1.0.1 |
-| Linux   | No support   | Up to v1.0.1 |
+| Windows | Up to v1.0.0 | Up to v1.0.2 |
+| macOS   | Up to v1.0.2 | Up to v1.0.2 |
+| Linux   | No support   | Up to v1.0.2 |
 
 The bundled executable file for Windows has some false positives in terms of anti-virus software. That is likely due to using PyInstaller/Nuitka for packaging as opposed to actual malware. If you're still paranoid, the source files are available above, and you can "compile" them yourself with PyInstaller
 
