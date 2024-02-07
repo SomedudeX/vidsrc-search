@@ -1,8 +1,8 @@
 from distutils.core import setup
 
 setup(
-  name = 'py-movie',               # How you named your package folder (MyLib)
-  packages = ['py-movie'],   # Chose the same as "name"
+  name = 'pymovie-search',               # How you named your package folder (MyLib)
+  packages = ['pymovie-search'],   # Chose the same as "name"
   version = '1.0.3',      # Start with a small number and increase it with every change you make
   license='MIT',        # Chose a license from here: https://help.github.com/articles/licensing-a-repository
   description = 'A pirate movie searched written in Python',   # Give a short description about your library
