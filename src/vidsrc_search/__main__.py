@@ -12,6 +12,7 @@ def main():
     try:
         utils.bootstrap()
         argparsing.parse_args()
+        utils.cleanup()
     except KeyboardInterrupt:
         print()
         print(" [Warning] Vidsrc-search received KeyboardInterrupt")
@@ -21,7 +22,7 @@ def main():
         os._exit(0)
     except Exception as e:
         print()
-        print(f" [Fatal] An unknown error was encountered during the execution of Vidsrc-search")
+        print(f" [Fatal] An unknown error was encountered during the execution of vidsrc-search")
         print(f" [Fatal] Error message from program: {e}")
         print(f" [Fatal] Performing program cleanup process")
         utils.cleanup()

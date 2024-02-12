@@ -1,5 +1,9 @@
 import os
+from ssl import SSLError
+import sys
 import shutil
+
+import requests
 
 
 HELP_TEXT = ("\
@@ -79,7 +83,39 @@ def make_directory(path: str) -> None:
     
 
 def delete_directory_recursive(path: str) -> None:
-    shutil.rmtree(path)
+    if os.path.exists(path):
+        shutil.rmtree(path)
+        
+
+def check_internet() -> None:
+    print()
+    print(" [Info] Verifying internet connection")
+    
+    try: 
+        print(" [Info] Pinging google.com")
+        requests.get("https://google.com")
+    except requests.exceptions.SSLError:
+        print() 
+        print(f" [Fatal] Could not establish secure connection")
+        print(f" [Fatal] You might be on a monitored network or using a VPN/Proxy")
+        print(f" [Fatal] Vidsrc-search terminating with exit code 127")
+        sys.exit(127)
+    except requests.exceptions.ConnectionError:
+        print()
+        print(f" [Fatal] Could not establish internet connection")
+        print(f" [Fatal] Make sure you are connected to the internet")
+        print(f" [Fatal] Vidsrc-search terminating with exit code 127")
+        sys.exit(127)
+    try:
+        print(" [Info] Pinging vidsrc.to")
+        requests.get("https://vidsrc.to")
+    except ConnectionError:
+        print()
+        print(f" [Fatal] Vidsrc.to is down")
+        print(f" [Fatal] Vidsrc-search cannot function correctly")
+        print(f" [Fatal] Vidsrc-search terminating with exit code -1")
+        sys.exit(127)
+    return
 
 
 def cleanup() -> None:
@@ -98,4 +134,5 @@ def bootstrap() -> None:
     make_directory(required_path_one)
     make_directory(required_path_two)
     make_directory(required_path_three)
+
     return

@@ -5,6 +5,7 @@ import aiohttp
 
 from .utils import cleanup
 
+from . import utils
 from . import json_utils
     
 
@@ -67,6 +68,8 @@ async def download_shows(total: int):
 
 
 def handle_download():
+    utils.check_internet()
+
     movies_size = get_download_size("movie")
     asyncio.run(download_movies(movies_size))
     

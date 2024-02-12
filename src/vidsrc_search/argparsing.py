@@ -21,6 +21,7 @@ def parse_command_opt() -> None:
             return
         else:
             print(f" [Fatal] Invalid argument for help: '{_argv[2]}'")
+            print(f" [Fatal] Use 'vidsrc-search help' for usage info")
             print(f" [Fatal] Vidsrc-search terminating with exit code 1")
             sys.exit(1)
             
@@ -37,6 +38,7 @@ def parse_command_opt() -> None:
             return
         else:
             print(f" [Fatal] Invalid argument for library: {_argv[2]}")
+            print(f" [Fatal] Use 'vidsrc-search help library' for usage info")
             print(f" [Fatal] Vidsrc-search terminating with exit code 1")
             sys.exit(1)
     
@@ -52,6 +54,16 @@ def parse_command() -> None:
     if _argv[1] == "help":
         utils.show_help()
         return
+    elif _argv[1] == "search":
+        print(f" [Fatal] Command 'search' requires a query")
+        print(f" [Fatal] Use 'vidsrc-search help search' for usage info")
+        print(f" [Fatal] Vidsrc-search terminating with exit code 1")
+        sys.exit(1)
+    elif _argv[1] == "library":
+        print(f" [Fatal] Command 'library' requires another argument")
+        print(f" [Fatal] Use 'vidsrc-search help library' for usage info")
+        print(f" [Fatal] Vidsrc-search terminating with exit code 1")
+        sys.exit(1)
     else:
         print(f" [Fatal] Invalid argument: '{_argv[1]}'")
         print(f" [Fatal] Use 'vidsrc-search help' for usage info")
