@@ -1,5 +1,4 @@
 dist
-build
 __pycache__/
 .DS_Store
-setup.log
+*.egg-info
