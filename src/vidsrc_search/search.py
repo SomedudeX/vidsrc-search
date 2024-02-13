@@ -1,7 +1,7 @@
 import os
 import sys
 import json
-import webbrowser
+import webview
 
 from . import utils
 
@@ -59,16 +59,55 @@ def search_library(search_query: str):
     return ret
 
 
+def on_closing() -> None:
+    print(f" [Info] Closing window to vidsrc.to")
+    print(f" [Info] Vidsrc-search executed succesfully")
+    utils.cleanup()
+    
+
+def on_loaded() -> None:
+    webview.windows[0].events.loaded -= on_loaded
+    webview.windows[0].on_top = False
+    return
+
+
 def print_warning() -> None:
     print()
     print(" [Warning] The content of the movie is hosted on a third party site. The")
     print("           site is not endorsed by the author or checked for its quality, ")
     print("           content, or authenticity. The author of vidsrc-search disclaims")
-    print("           all responsibilities, express or implied, of your usage or ")
-    print("           dependence on the website provided through this tool")
-    print(" [Warning] Ad/privacy and pop-up blockers are highly recommended\n")
-    input(" > Press enter to continue ")
-        
+    print("           any responsibility, express or implied, of the consequences ")
+    print("           as a result your usage or dependence on the website provided ")
+    print("           through this tool. ")
+    print(" [Warning] The following window shown will be the contents of vidsrc.to\n")
+    affirm = input(" > I have read and understood the conditions above (Y/n) ")
+    if not affirm == "Y":
+        print()
+        print(" [Info] Terminating per user request")
+        raise UserWarning
+    return
+
+
+def show_movie(index: int, results: list):
+    print_warning()
+    utils.check_internet()    
+    
+    print(f" [Info] Opening index #{index + 1} in external window")
+    print(f" [Info] Opened link to movie '{results[index]['Title']}'")
+    
+    window = webview.create_window(
+        f"External - {results[index]['Title']}", 
+        results[index]['URL'],
+        maximized = True,
+        on_top = True,
+        frameless = True
+    )
+    
+    window.events.closing += on_closing
+    window.events.loaded += on_loaded
+    webview.start()
+    return
+    
 
 def handle_search(query: str) -> None:
     print(f" [Info] Searching json libary for '{query}'")
@@ -100,11 +139,5 @@ def handle_search(query: str) -> None:
             continue
     
     open_index -= 1
-    
-    print_warning()
-    
-    utils.check_internet()    
-    
-    print(f"\n [Info] Opening index #{open_index + 1} in your default browser")
-    webbrowser.open(results[open_index]["URL"])
-    print(f" [Info] Opened link to movie '{results[open_index]['Title']}'")
+    show_movie(open_index, results)
+    return

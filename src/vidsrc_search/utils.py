@@ -97,7 +97,7 @@ def check_internet() -> None:
     print(" [Info] Verifying internet connection")
     
     try: 
-        print(" [Info] Pinging google.com")
+        print(" [Info] Testing connection by pinging google.com")
         requests.get("https://google.com")
     except requests.exceptions.SSLError:
         print() 
@@ -112,18 +112,21 @@ def check_internet() -> None:
         print(f" [Fatal] Vidsrc-search terminating with exit code 127")
         sys.exit(127)
     try:
-        print(" [Info] Pinging vidsrc.to")
-        requests.get("https://vidsrc.to")
+        print(" [Info] Testing connection by pinging vidsrc.to")
+        requests.get("https://vidsrc.to", allow_redirects = False)
     except ConnectionError:
         print()
-        print(f" [Fatal] Vidsrc.to is down")
-        print(f" [Fatal] Vidsrc-search cannot function correctly")
+        print(f" [Fatal] Could not reach vidsrc.to")
+        print(f" [Fatal] This might be because of an issue with the")
+        print(f"         external server, or it might be due to")
+        print(f"         that the server is blocked in your region. ")
         print(f" [Fatal] Vidsrc-search terminating with exit code -1")
         sys.exit(127)
     return
 
 
 def cleanup() -> None:
+    print(" [Info] Performing program cleanup process")
     path_one = os.path.expanduser("~/.config/pymovie/movie_buffer")
     path_two = os.path.expanduser("~/.config/pymovie/tv_buffer")
     delete_directory_recursive(path_one)
