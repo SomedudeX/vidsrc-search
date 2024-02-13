@@ -15,7 +15,6 @@ def main():
     try:
         utils.bootstrap()
         argparsing.parse_args()
-        utils.cleanup()
     except KeyboardInterrupt:
         print()
         print(" [Warning] Vidsrc-search received KeyboardInterrupt")

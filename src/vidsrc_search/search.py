@@ -66,6 +66,7 @@ def on_closing() -> None:
     
 
 def on_loaded() -> None:
+    print(" [Info] Opened window to movie")
     webview.windows[0].events.loaded -= on_loaded
     webview.windows[0].on_top = False
     return
@@ -92,20 +93,19 @@ def show_movie(index: int, results: list):
     print_warning()
     utils.check_internet()    
     
-    print(f" [Info] Opening index #{index + 1} in external window")
-    print(f" [Info] Opened link to movie '{results[index]['Title']}'")
+    print(f" [Info] Opening index #{index + 1} ({results[index]['Title']}) in external window")
     
     window = webview.create_window(
         f"External - {results[index]['Title']}", 
         results[index]['URL'],
         maximized = True,
         on_top = True,
-        frameless = True
     )
     
     window.events.closing += on_closing
     window.events.loaded += on_loaded
-    webview.start()
+    
+    webview.start(http_server = True)
     return
     
 
