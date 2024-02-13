@@ -1,7 +1,7 @@
 import os
-from ssl import SSLError
 import sys
 import shutil
+import asyncio
 
 import requests
 
@@ -15,7 +15,7 @@ Available commands:                                 \n\
     library     actions regarding the movie lib     \n\
                                                     \n\
 Use 'vidsrc-search help <command>' for info         \n\
-on a specific command.                              \n\
+on a specific command.                              \
 ")
 
 HELP_HELP = ("\
@@ -28,7 +28,7 @@ Available options:                                  \n\
                                                     \n\
 Example:                                            \n\
      vidsrc-search help library                     \n\
-     vidsrc-search help help                        \n\
+     vidsrc-search help help                        \
 ")
 
 HELP_SEARCH = ("\
@@ -40,7 +40,7 @@ Required option:                                    \n\
                                                     \n\
 Example:                                            \n\
     vidsrc-search search 'oppenheimer'              \n\
-    vidsrc-search search 'avatar'                   \n\
+    vidsrc-search search 'avatar'                   \
 ")
 
 HELP_LIB = ("\
@@ -52,7 +52,7 @@ Required options:                                   \n\
                 from https://vidsrc.to              \n\
                                                     \n\
 Example:                                            \n\
-    vidsrc-search library download                  \n\
+    vidsrc-search library download                  \
 ")
 
 
@@ -85,6 +85,11 @@ def make_directory(path: str) -> None:
 def delete_directory_recursive(path: str) -> None:
     if os.path.exists(path):
         shutil.rmtree(path)
+        
+        
+def asyncio_patch() -> None:
+    if sys.platform in ["win32", "cygwin", "msys"]:
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
         
 
 def check_internet() -> None:

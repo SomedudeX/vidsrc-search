@@ -3,6 +3,9 @@
 
 import os
 import sys
+import warnings
+
+warnings.filterwarnings("ignore")
 
 from . import utils
 from . import argparsing
@@ -26,7 +29,12 @@ def main():
         print(f" [Fatal] Error message from program: {e}")
         print(f" [Fatal] Performing program cleanup process")
         utils.cleanup()
-        sys.exit(129)
+        print()
+        print(f" [Info] Note: ")
+        print(f" [Info] This might be due to a temporary error in the program")
+        print(f" [Info] The issue might fix itself if you rerun the program")
+        print(f" [Info] Vidsrc-search terminating with exit code 255")
+        sys.exit(255)
 
 
 if __name__ == "__main__":

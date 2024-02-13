@@ -1,3 +1,4 @@
+import os
 import json
 import requests
 import asyncio
@@ -39,12 +40,13 @@ async def fetch_downloads(session, url):
 
 async def download_movies(total: int):
     domain = "https://vidsrc.to/vapi/movie/new/"
-    root   = "/Users/Dev/.config/pymovie/movie_buffer/"
+    root   = "~/.config/pymovie/movie_buffer/"
     urls   = [f"{domain}{i}" for i in range(total)]
     print(f" [Info] Initiated download_movies with {total} pages")
     async with aiohttp.ClientSession() as session:
         tasks = [fetch_downloads(session, url) for url in urls]
         jsons = await asyncio.gather(*tasks)
+        root = os.path.expanduser(root)
         for index, file in enumerate(jsons):
             f = open(f"{root}{index}.json", "w")
             f.write(json.dumps(file))
@@ -54,12 +56,13 @@ async def download_movies(total: int):
 
 async def download_shows(total: int):
     domain = "https://vidsrc.to/vapi/tv/new/"
-    root   = "/Users/Dev/.config/pymovie/tv_buffer/"
+    root   = "~/.config/pymovie/tv_buffer/"
     urls   = [f"{domain}{i}" for i in range(total)]
     print(f" [Info] Initiated download_shows with {total} pages")
     async with aiohttp.ClientSession() as session:
         tasks = [fetch_downloads(session, url) for url in urls]
         jsons = await asyncio.gather(*tasks)
+        root = os.path.expanduser(root)
         for index, file in enumerate(jsons):
             f = open(f"{root}{index}.json", "w")
             f.write(json.dumps(file))
@@ -69,6 +72,7 @@ async def download_shows(total: int):
 
 def handle_download():
     utils.check_internet()
+    utils.asyncio_patch()
 
     movies_size = get_download_size("movie")
     asyncio.run(download_movies(movies_size))

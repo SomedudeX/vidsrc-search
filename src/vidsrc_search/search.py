@@ -1,7 +1,6 @@
 import os
 import sys
 import json
-import textwrap
 import webbrowser
 
 from . import utils
@@ -23,7 +22,7 @@ def sort_results(result: list) -> list:
     return result
 
 
-def search_library(search_query: str) -> list | None:
+def search_library(search_query: str):
     ret = []
     lib_path = os.path.expanduser("~/.config/pymovie/lib.json")
     if not os.path.exists(lib_path):
@@ -44,7 +43,7 @@ def search_library(search_query: str) -> list | None:
             "IMDB ID": entry["imdb_id"], 
             "Type": entry["type"], 
             "URL": entry["embed_url_imdb"], 
-            "Match": f"{similarity(entry["title"], search_query):.2f}%",
+            "Match": f"{similarity(entry['title'], search_query):.2f}%",
             })
 
     if len(ret) == 0: return None
@@ -108,4 +107,4 @@ def handle_search(query: str) -> None:
     
     print(f"\n [Info] Opening index #{open_index + 1} in your default browser")
     webbrowser.open(results[open_index]["URL"])
-    print(f" [Info] Opened link to movie '{results[open_index]["Title"]}'")
+    print(f" [Info] Opened link to movie '{results[open_index]['Title']}'")
