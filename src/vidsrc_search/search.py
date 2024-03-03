@@ -38,12 +38,12 @@ def search_library(search_query: str):
     for entry in library: 
         if similarity(entry["title"], search_query) >= 60:
             ret.append({
-            "Index": None,
-            "Title": entry["title"], 
-            "IMDB ID": entry["imdb_id"], 
-            "Type": entry["type"], 
-            "URL": entry["embed_url_imdb"], 
-            "Match": f"{similarity(entry['title'], search_query):.2f}%",
+                "Index": None,
+                "Title": entry["title"], 
+                "IMDB ID": entry["imdb_id"], 
+                "Type": entry["type"], 
+                "URL": entry["embed_url_imdb"], 
+                "Match": f"{similarity(entry['title'], search_query):.2f}%",
             })
 
     if len(ret) == 0: return None
