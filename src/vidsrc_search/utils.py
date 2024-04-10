@@ -93,12 +93,18 @@ def asyncio_patch() -> None:
         
 
 def check_internet() -> None:
-    print()
     print(" [Info] Verifying internet connection")
     
     try: 
         print(" [Info] Testing connection by pinging google.com")
-        requests.get("https://google.com")
+        r = requests.get("https://google.com", allow_redirects = False)
+        r.raise_for_status()
+    except requests.exceptions.HTTPError:
+        print() 
+        print(f" [Fatal] An HTTP error was encountered")
+        print(f" [Fatal] This might be due to an issue with the external server")
+        print(f" [Fatal] Vidsrc-search terminating with exit code 127")
+        sys.exit(127)
     except requests.exceptions.SSLError:
         print() 
         print(f" [Fatal] Could not establish secure connection")
@@ -111,10 +117,23 @@ def check_internet() -> None:
         print(f" [Fatal] Make sure you are connected to the internet")
         print(f" [Fatal] Vidsrc-search terminating with exit code 127")
         sys.exit(127)
+    except requests.exceptions.RequestException as e:
+        print()
+        print(f" [Fatal] An unknown network error occured: {e}")
+        print(f" [Fatal] This could be due to an issue with the external server")
+        print(f" [Fatal] Vidsrc-search terminating with exit code 255")
+        sys.exit(255)
+
     try:
         print(" [Info] Testing connection by pinging vidsrc.to")
         requests.get("https://vidsrc.to", allow_redirects = False)
-    except ConnectionError:
+    except requests.exceptions.HTTPError:
+        print() 
+        print(f" [Fatal] An HTTP error was encountered while pinging vidsrc.to")
+        print(f" [Fatal] This might be due to an issue with the external server")
+        print(f" [Fatal] Vidsrc-search terminating with exit code 127")
+        sys.exit(127)
+    except requests.exceptions.ConnectionError:
         print()
         print(f" [Fatal] Could not reach vidsrc.to")
         print(f" [Fatal] This might be because of an issue with the")
@@ -122,6 +141,12 @@ def check_internet() -> None:
         print(f"         that the server is blocked in your region. ")
         print(f" [Fatal] Vidsrc-search terminating with exit code -1")
         sys.exit(127)
+    except requests.exceptions.RequestException as e:
+        print()
+        print(f" [Fatal] An unknown network error occured: {e}")
+        print(f" [Fatal] This could be due to an issue with the server")
+        print(f" [Fatal] Vidsrc-search terminating with exit code 255")
+        sys.exit(255)
     return
 
 

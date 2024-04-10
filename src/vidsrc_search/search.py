@@ -46,12 +46,12 @@ def search_library(search_query: str):
                 "Match": f"{similarity(entry['title'], search_query):.2f}%",
             })
 
-    if len(ret) == 0: return None
-    ret = sort_results(ret)
+    if len(ret) == 0: 
+        return None
 
+    ret = sort_results(ret)
     while len(ret) > 20: 
         del ret[len(ret) - 1]
-        
     index = 1
     for result in ret:
         result["Index"] = f"[{index}]"
