@@ -5,8 +5,6 @@ import os
 import sys
 import warnings
 
-warnings.filterwarnings("ignore")
-
 from . import utils
 from . import argparsing
 
@@ -15,18 +13,20 @@ def main():
     try:
         utils.bootstrap()
         argparsing.parse_args()
+    except SystemExit:
+        pass
+    except UserWarning:
+        print(" [Warning] Vidsrc-search received UserWarning")
+        print(" [Warning] Program force quitting with os._exit()")
+        utils.cleanup()
+        os._exit(0)
     except KeyboardInterrupt:
         print()
         print(" [Warning] Vidsrc-search received KeyboardInterrupt")
         print(" [Warning] Program force quitting with os._exit()")
         utils.cleanup()
         os._exit(0)
-    except UserWarning:
-        print(" [Warning] Vidsrc-search received UserWarning")
-        print(" [Warning] Program force quitting with os._exit()")
-        utils.cleanup()
-        os._exit(0)
-    except Exception as e:
+    except BaseException as e:
         print()
         print(f" [Fatal] An unknown error was encountered during the execution of vidsrc-search")
         print(f" [Fatal] Error message from program: {e}")
