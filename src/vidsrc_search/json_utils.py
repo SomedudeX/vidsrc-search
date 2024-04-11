@@ -1,14 +1,18 @@
 import os
 import json
 
+
 def load_json(path: str) -> list:
     ret: list = []
     path = os.path.expanduser(path)
     if not os.path.exists(path):
         return ret
     with open(path, "r") as f:
-        ret.append(json.load(f))
-        return ret
+        try:
+            ret.append(json.load(f))
+            return ret
+        except json.JSONDecodeError:
+            return []
         
 
 def parse_entry(page: dict) -> list:
@@ -19,18 +23,15 @@ def parse_entry(page: dict) -> list:
     return ret
 
 
-def unite_jsons(movie_index: int, tv_index: int) -> None:
+def unite_jsons(movie_index: int, tv_index: int) -> int:
+    print()
     print(f" [Info] Uniting {movie_index + tv_index} json files")
     unparsed_entries = []
     parsed_entries = []
     for i in range(movie_index): 
-        unparsed_entries.append(
-            load_json(f"~/.local/vidsrc-search/movie_buffer/{i}.json")
-        )
+        unparsed_entries.append(load_json(f"~/.local/vidsrc-search/movie_buffer/{i}.json"))
     for i in range(tv_index): 
-        unparsed_entries.append(
-            load_json(f"~/.local/vidsrc-search/tv_buffer/{i}.json")
-        )
+        unparsed_entries.append(load_json(f"~/.local/vidsrc-search/tv_buffer/{i}.json"))
 
     print(f" [Info] Parsing {movie_index + tv_index} json files")
     for page in unparsed_entries:
@@ -39,5 +40,5 @@ def unite_jsons(movie_index: int, tv_index: int) -> None:
     print(" [Info] Dumping parsed json")
     path = os.path.expanduser("~/.local/vidsrc-search/lib.json")
     with open(path, "w") as f:
-        json.dump(parsed_entries, f, indent=4)
-    return
+        json.dump(parsed_entries, f)
+    return len(parsed_entries)
