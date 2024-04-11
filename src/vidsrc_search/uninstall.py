@@ -4,7 +4,7 @@ import json
 
 
 def handle_remove() -> None:
-    lib_path = os.path.expanduser("~/.cache/vidsrc-search/lib.json")
+    lib_path = os.path.expanduser("~/.local/vidsrc-search/lib.json")
     if not os.path.exists(lib_path):
         print(" [Fatal] Library does not exist")
         print(" [Fatal] Please download the library first by using 'vidsrc-search library download'")
