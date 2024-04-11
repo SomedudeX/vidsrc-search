@@ -23,7 +23,7 @@ def parse_command_opt_flag() -> None:
         search.handle_search(_argv[2], fallback=True)
         return
     elif _argv[1] == "library":
-        print(f" [Fatal] Too many arguments provided for command 'libary'")
+        print(f" [Fatal] Too many arguments provided for command 'library'")
         print(f" [Fatal] Use 'vidsrc-search help library' for usage info")
         print(f" [Fatal] Vidsrc-search terminating with exit code 1")
         sys.exit(1)
@@ -126,7 +126,7 @@ def parse_args() -> None:
         print(f" [Fatal] Vidsrc-search terminating with exit code 1")
         sys.exit(1)
     
-    print(f" [Fatal] An unknown error occured")
+    print(f" [Fatal] An unknown error occurred")
     print(f" [Info] Locals:")
     print(f"  - sys.argv = {_argv}")
     print(f"  - sys.argc = {_argc}")

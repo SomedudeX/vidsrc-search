@@ -4,10 +4,10 @@ import json
 
 
 def handle_remove() -> None:
-    lib_path = os.path.expanduser("~/.cache/pymovie/lib.json")
+    lib_path = os.path.expanduser("~/.cache/vidsrc-search/lib.json")
     if not os.path.exists(lib_path):
         print(" [Fatal] Library does not exist")
-        print(" [Fatal] Please download the library first by using 'vidsrc-search libary download'")
+        print(" [Fatal] Please download the library first by using 'vidsrc-search library download'")
         print(" [Fatal] Vidsrc-search terminating with exit code 2")
         sys.exit(2)
     with open(lib_path, "r") as f:

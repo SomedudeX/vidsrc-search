@@ -123,7 +123,7 @@ def check_internet() -> None:
         sys.exit(127)
     except requests.exceptions.RequestException as e:
         print()
-        print(f" [Fatal] An unknown network error occured: {e}")
+        print(f" [Fatal] An unknown network error occurred: {e}")
         print(f" [Fatal] This could be due to an issue with the external server")
         print(f" [Fatal] Vidsrc-search terminating with exit code 255")
         sys.exit(255)
@@ -147,7 +147,7 @@ def check_internet() -> None:
         sys.exit(127)
     except requests.exceptions.RequestException as e:
         print()
-        print(f" [Fatal] An unknown network error occured: {e}")
+        print(f" [Fatal] An unknown network error occurred: {e}")
         print(f" [Fatal] This could be due to an issue with the server")
         print(f" [Fatal] Vidsrc-search terminating with exit code 255")
         sys.exit(255)
@@ -160,7 +160,7 @@ def cleanup() -> None:
     path_two = os.path.expanduser("~/.local/vidsrc-search/tv_buffer")
     delete_directory_recursive(path_one)
     delete_directory_recursive(path_two)
-    delete_directory_recursive(os.path.expanduser("~/.config/pymovie"))
+    delete_directory_recursive(os.path.expanduser("~/.config/pymovie")) # Pre v0.1.4 folder
     return
 
 

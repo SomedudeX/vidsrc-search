@@ -29,7 +29,7 @@ def search_library(search_query: str):
     lib_path = os.path.expanduser("~/.local/vidsrc-search/lib.json")
     if not os.path.exists(lib_path):
         print(" [Fatal] Library does not exist")
-        print(" [Fatal] Please download the library first by using 'vidsrc-search libary download'")
+        print(" [Fatal] Please download the library first by using 'vidsrc-search library download'")
         print(" [Fatal] Vidsrc-search terminating with exit code 2")
         sys.exit(2)
 
@@ -63,7 +63,7 @@ def search_library(search_query: str):
 
 def on_closing() -> None:
     print(f" [Info] Closing window to vidsrc.to")
-    print(f" [Info] Vidsrc-search executed succesfully")
+    print(f" [Info] Vidsrc-search executed successfully")
     utils.cleanup()
     
 
@@ -139,7 +139,7 @@ def show_movie(index: int, results: list, fallback: bool = False):
     
 
 def handle_search(query: str, fallback: bool = False) -> None:
-    print(f" [Info] Searching json libary for '{query}'")
+    print(f" [Info] Searching json library for '{query}'")
     results = search_library(query)
     if results == None:
         print(f" [Info] '{query}' not found in movies library")

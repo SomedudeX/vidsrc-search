@@ -67,7 +67,7 @@ async def download_shows(total: int):
             f = open(f"{root}{index}.json", "w")
             f.write(json.dumps(file))
             f.close()
-    print(f" [Info] {total} pages/{total * 15} links were succesfully downloaded")
+    print(f" [Info] {total} pages/{total * 15} links were successfully downloaded")
 
 
 def handle_download():
