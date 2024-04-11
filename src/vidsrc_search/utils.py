@@ -38,6 +38,12 @@ Required option:                                    \n\
     <str>       a movie title that you would like   \n\
                 vidsrc-search to search for         \n\
                                                     \n\
+Optional flags:                                     \n\
+    --fallback  launch a movie through a custom     \n\
+                python window                       \n\
+                                                    \n\
+                                                    \n\
+                                                    \n\
 Example:                                            \n\
     vidsrc-search search 'oppenheimer'              \n\
     vidsrc-search search 'avatar'                   \
@@ -77,9 +83,7 @@ def show_help_lib():
 
 
 def make_directory(path: str) -> None:
-    if os.path.exists(path):
-        return
-    os.makedirs(path)
+    os.makedirs(path, exist_ok=True)
     
 
 def delete_directory_recursive(path: str) -> None:
@@ -152,20 +156,19 @@ def check_internet() -> None:
 
 def cleanup() -> None:
     print(" [Info] Performing program cleanup process")
-    path_one = os.path.expanduser("~/.config/pymovie/movie_buffer")
-    path_two = os.path.expanduser("~/.config/pymovie/tv_buffer")
+    path_one = os.path.expanduser("~/.local/vidsrc-search/movie_buffer")
+    path_two = os.path.expanduser("~/.local/vidsrc-search/tv_buffer")
     delete_directory_recursive(path_one)
     delete_directory_recursive(path_two)
+    delete_directory_recursive(os.path.expanduser("~/.config/pymovie"))
     return
 
 
 def bootstrap() -> None:
-    required_path_one = os.path.expanduser("~/.config/pymovie")
-    required_path_two = os.path.expanduser("~/.config/pymovie/movie_buffer")
-    required_path_three = os.path.expanduser("~/.config/pymovie/tv_buffer")
-    
+    required_path_one = os.path.expanduser("~/.local/vidsrc-search/movie_buffer")
+    required_path_two = os.path.expanduser("~/.local/vidsrc-search/tv_buffer")
+    required_path_three = os.path.expanduser("~/.local/vidsrc-search/cache")
     make_directory(required_path_one)
     make_directory(required_path_two)
     make_directory(required_path_three)
-
     return

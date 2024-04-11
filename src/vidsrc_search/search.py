@@ -2,6 +2,8 @@ import os
 import sys
 import json
 import webview
+import requests
+import webbrowser
 
 from . import utils
 
@@ -24,7 +26,7 @@ def sort_results(result: list) -> list:
 
 def search_library(search_query: str):
     ret = []
-    lib_path = os.path.expanduser("~/.config/pymovie/lib.json")
+    lib_path = os.path.expanduser("~/.local/vidsrc-search/lib.json")
     if not os.path.exists(lib_path):
         print(" [Fatal] Library does not exist")
         print(" [Fatal] Please download the library first by using 'vidsrc-search libary download'")
@@ -82,6 +84,7 @@ def print_warning() -> None:
     print("           through this tool. ")
     print(" [Warning] The following window shown will be the contents of vidsrc.to\n")
     affirm = input(" > I have read and understood the conditions above (Y/n) ")
+    print()
     if not affirm == "Y":
         print()
         print(" [Info] Terminating per user request")
@@ -89,27 +92,53 @@ def print_warning() -> None:
     return
 
 
-def show_movie(index: int, results: list):
+def show_movie(index: int, results: list, fallback: bool = False):
     print_warning()
-    utils.check_internet()    
-    
-    print(f" [Info] Opening index #{index + 1} ({results[index]['Title']}) in external window")
+    utils.check_internet()
+
+    number = index + 1
+    title = results[index]["Title"]
+    url = results[index]["URL"]
+    id = results[index]["IMDB ID"]
+
+    print()
+    print(f" [Info] Checking for local cache")
+
+    if not os.path.exists(os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html")):
+        print(f" [Info] Local cache not found: Getting remote html")
+        response = requests.get(url)
+        print(f" [Info] Remote html request status code is {response.status_code}")
+        with open(os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html"), "w") as f:
+            print(f" [Info] Writing remote html content to local cache")
+            f.write(response.content.decode())
+
+    if not fallback:
+        print(f" [Info] Opening #{number} '{title}' in new browser window")
+        webbrowser.open("file://" + os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html"))
+        return
+
+    print(f" [Info] Using fallback mode for movie launching")
+    print(f" [Info] Opening #{number} '{title}' in new window")
     
     window = webview.create_window(
-        f"External - {results[index]['Title']}", 
-        results[index]['URL'],
+        f"External - {title}",
+        os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html"),
         maximized = True,
         on_top = True,
     )
-    
+
     window.events.closing += on_closing
     window.events.loaded += on_loaded
-    
-    webview.start(http_server = True)
+
+    webview.start(
+        http_server=True,
+        storage_path=os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}"),
+        private_mode=False
+    )
     return
     
 
-def handle_search(query: str) -> None:
+def handle_search(query: str, fallback: bool = False) -> None:
     print(f" [Info] Searching json libary for '{query}'")
     results = search_library(query)
     if results == None:
@@ -139,5 +168,5 @@ def handle_search(query: str) -> None:
             continue
     
     open_index -= 1
-    show_movie(open_index, results)
+    show_movie(open_index, results, fallback=fallback)
     return

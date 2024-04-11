@@ -40,7 +40,7 @@ async def fetch_downloads(session, url):
 
 async def download_movies(total: int):
     domain = "https://vidsrc.to/vapi/movie/new/"
-    root   = "~/.config/pymovie/movie_buffer/"
+    root   = "~/.local/vidsrc-search/movie_buffer/"
     urls   = [f"{domain}{i}" for i in range(total)]
     print(f" [Info] Initiated download_movies with {total} pages")
     async with aiohttp.ClientSession() as session:
@@ -56,7 +56,7 @@ async def download_movies(total: int):
 
 async def download_shows(total: int):
     domain = "https://vidsrc.to/vapi/tv/new/"
-    root   = "~/.config/pymovie/tv_buffer/"
+    root   = "~/.local/vidsrc-search/tv_buffer/"
     urls   = [f"{domain}{i}" for i in range(total)]
     print(f" [Info] Initiated download_shows with {total} pages")
     async with aiohttp.ClientSession() as session:

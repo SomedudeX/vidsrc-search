@@ -25,11 +25,11 @@ def unite_jsons(movie_index: int, tv_index: int) -> None:
     parsed_entries = []
     for i in range(movie_index): 
         unparsed_entries.append(
-            load_json(f"~/.config/pymovie/movie_buffer/{i}.json")
+            load_json(f"~/.local/vidsrc-search/movie_buffer/{i}.json")
         )
     for i in range(tv_index): 
         unparsed_entries.append(
-            load_json(f"~/.config/pymovie/tv_buffer/{i}.json")
+            load_json(f"~/.local/vidsrc-search/tv_buffer/{i}.json")
         )
 
     print(f" [Info] Parsing {movie_index + tv_index} json files")
@@ -37,7 +37,7 @@ def unite_jsons(movie_index: int, tv_index: int) -> None:
         parsed_entries += parse_entry(page[0])
 
     print(" [Info] Dumping parsed json")
-    path = os.path.expanduser("~/.config/pymovie/lib.json")
+    path = os.path.expanduser("~/.local/vidsrc-search/lib.json")
     with open(path, "w") as f:
         json.dump(parsed_entries, f, indent=4)
     return
