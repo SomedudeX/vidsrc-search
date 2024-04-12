@@ -114,6 +114,7 @@ def handle_download():
 
 def handle_remove() -> None:
     lib_path = os.path.expanduser("~/.local/vidsrc-search/lib.json")
+    cache_path = os.path.expanduser("~/.local/vidsrc-search/cache")
     if not os.path.exists(lib_path):
         print(" [Fatal] Library does not exist")
         print(" [Fatal] Please download the library first by using 'vidsrc-search library download'")
@@ -130,5 +131,6 @@ def handle_remove() -> None:
 
     print(" [Info] Removing library json file")
     os.remove(lib_path)
+    utils.delete_directory_recursive(cache_path)
     print(" [Info] Library json file removed")
     return
