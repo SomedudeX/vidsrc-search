@@ -1,135 +1,84 @@
-import sys
-
-from . import utils
-from . import search
-from . import download
-from . import uninstall
+from typing import List, Tuple, Dict, Any
 
 
-def parse_command_opt_flag() -> None:
-    _argv = sys.argv
-
-    if _argv[1] == "help":
-        print(f" [Fatal] Too many arguments provided for command 'help'")
-        print(f" [Fatal] Use 'vidsrc-search help help' for usage info")
-        print(f" [Fatal] Vidsrc-search terminating with exit code 1")
-        sys.exit(1)
-    elif _argv[1] == "search":
-        if _argv[3] != "--fallback":
-            print(f" [Fatal] Invalid flag '{_argv[3]}' for command 'search'")
-            print(f" [Fatal] Use 'vidsrc-search help search' for usage info")
-            print(f" [Fatal] Vidsrc-search terminating with exit code 1")
-            sys.exit(1)
-        search.handle_search(_argv[2], fallback=True)
-        return
-    elif _argv[1] == "library":
-        print(f" [Fatal] Too many arguments provided for command 'library'")
-        print(f" [Fatal] Use 'vidsrc-search help library' for usage info")
-        print(f" [Fatal] Vidsrc-search terminating with exit code 1")
-        sys.exit(1)
-    else:
-        print(f" [Fatal] Invalid argument: '{_argv[1]}'")
-        print(f" [Fatal] Use 'vidsrc-search help' for usage info")
-        print(f" [Fatal] Vidsrc-search terminating with exit code 1")
-        sys.exit(1)
-
-def parse_command_opt() -> None:
-    _argv = sys.argv
-    
-    if _argv[1] == "help":
-        if _argv[2] == "help":
-            utils.show_help_help()
-            return
-        elif _argv[2] == "search":
-            utils.show_help_search()
-            return
-        elif _argv[2] == "library":
-            utils.show_help_lib()
-            return
-        else:
-            print(f" [Fatal] Invalid argument for help: '{_argv[2]}'")
-            print(f" [Fatal] Use 'vidsrc-search help help' for usage info")
-            print(f" [Fatal] Vidsrc-search terminating with exit code 1")
-            sys.exit(1)
-            
-    if _argv[1] == "search":
-        if _argv[2] == "--fallback":
-            print(f" [Fatal] No search query were provided to vidsrc-search")
-            print(f" [Fatal] Use 'vidsrc-search help' for usage info")
-            print(f" [Fatal] Vidsrc-search terminating with exit code 1")
-            sys.exit(1)
-        search.handle_search(_argv[2], fallback=False)
-        return
-         
-    if _argv[1] == "library":
-        if _argv[2] == "download":
-            download.handle_download()
-            return
-        elif _argv[2] == "remove":
-            uninstall.handle_remove()
-            return
-        else:
-            print(f" [Fatal] Invalid argument for library: {_argv[2]}")
-            print(f" [Fatal] Use 'vidsrc-search help library' for usage info")
-            print(f" [Fatal] Vidsrc-search terminating with exit code 1")
-            sys.exit(1)
-    
-    print(f" [Fatal] Invalid argument: {_argv[1]}")
-    print(f" [Fatal] Vidsrc-search terminating with exit code 1")
-    sys.exit(1)
+class ArgumentsError(Exception):
+    def __init__(
+        self,
+        message: str,
+        code: int = 1
+    ) -> None:
+        self.message = message
+        self.code = code
+        super().__init__()
 
 
-def parse_command() -> None:
-    # Initiated when there exists only one command-line arg
-    _argv = sys.argv
-    
-    if _argv[1] == "help":
-        utils.show_help()
-        return
-    elif _argv[1] == "search":
-        print(f" [Fatal] Command 'search' requires a query")
-        print(f" [Fatal] Use 'vidsrc-search help search' for usage info")
-        print(f" [Fatal] Vidsrc-search terminating with exit code 1")
-        sys.exit(1)
-    elif _argv[1] == "library":
-        print(f" [Fatal] Command 'library' requires another argument")
-        print(f" [Fatal] Use 'vidsrc-search help library' for usage info")
-        print(f" [Fatal] Vidsrc-search terminating with exit code 1")
-        sys.exit(1)
-    else:
-        print(f" [Fatal] Invalid argument: '{_argv[1]}'")
-        print(f" [Fatal] Use 'vidsrc-search help' for usage info")
-        print(f" [Fatal] Vidsrc-search terminating with exit code 1")
-        sys.exit(1)
-    
+def is_flag(arg: str) -> bool:
+    assert len(arg) > 0
+    return arg[0] == "-"
 
-def parse_args() -> None:
-    # The hightest level control-flow for argparsing
-    _argv = sys.argv
-    _argc = len(_argv)
-    
-    if _argc == 1:
-        utils.show_help()
-        return
-    if _argc == 2:
-        parse_command()
-        return
-    if _argc == 3:
-        parse_command_opt()
-        return
-    if _argc == 4:
-        parse_command_opt_flag()
-        return
-    if _argc > 4:
-        print(f" [Fatal] Too many arguments provided")
-        print(f" [Fatal] Use 'vidsrc-search help' for usage info")
-        print(f" [Fatal] Vidsrc-search terminating with exit code 1")
-        sys.exit(1)
-    
-    print(f" [Fatal] An unknown error occurred")
-    print(f" [Info] Locals:")
-    print(f"  - sys.argv = {_argv}")
-    print(f"  - sys.argc = {_argc}")
-    print(f" [Fatal] Vidsrc-search terminating with exit code -1")
-    sys.exit(-1)
-    
+
+def is_int(arg: str) -> bool:
+    if not isinstance(arg, str):
+        return False
+    return arg.isdigit()
+
+
+def is_stacked_flag(flag: str) -> bool:
+    if len(flag) <= 2:
+        return False
+    return flag[0] == "-" and flag[1] != "-"
+
+
+def process_bool_flag(flag: tuple) -> int | str:
+    if not is_int(flag[1]):
+        return flag[1]
+    return bool(int(flag[1]))
+
+
+def split_arguments(argv: List[str]) -> Tuple[Any, Any]:
+    for index, arg in enumerate(argv):
+        if is_flag(arg):
+            flags = argv[index:]
+            positionals = argv[:index]
+            return positionals, split_flags(flags)
+    return argv, []
+
+
+def split_flags(flags: List[str]) -> List[Tuple]:
+    ret = []
+    for _ in range(len(flags)):
+        if len(flags) == 0:
+            break
+        current_flag = flags[0]
+        if current_flag[0] == "-":
+            option = current_flag
+            ret.append((option, True))
+            del flags[0]
+            continue
+        raise ArgumentsError(f"error parsing '{current_flag}' (unexpected trailing positional)", 1)
+    return ret
+
+
+def parse_arguments(argv: List[str]) -> Dict[str, Any]:
+    ret = {
+        "module": [""],
+        "raw": False,
+        "new": False
+    }
+
+    positionals, flags = split_arguments(argv)
+
+    if len(positionals) > 0:
+        ret["module"] = positionals
+
+    for flag in flags:   # Mapping each command line flag to a dictionary key
+        if flag[0] == "--raw" or flag[0] == "-r":
+            ret["raw"] = process_bool_flag(flags[0])
+            continue
+        if flag[0] == "--new" or flag[0] == "-n":
+            ret["new"] = process_bool_flag(flags[0])
+            continue
+        if is_stacked_flag(flag[0]):
+            raise ArgumentsError(f"stacked flag '{flag[0]}' not allowed", 1)
+        raise ArgumentsError(f"invalid flag '{flag[0]}' received", 1)
+    return ret

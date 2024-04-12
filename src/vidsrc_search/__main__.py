@@ -5,14 +5,18 @@ import os
 import sys
 
 from . import utils
+from . import modules
 from . import argparsing
+
+from .argparsing import ArgumentsError
 
 
 def main():
     try:
+        sys.argv = sys.argv[1:]
         utils.bootstrap()
-        argparsing.parse_args()
-        print(f" [Info] Finished executing vidsrc-search")
+        args = argparsing.parse_arguments(sys.argv)
+        modules.start(args)
     except SystemExit as e:
         sys.exit(e.code)
     except UserWarning:
@@ -26,6 +30,11 @@ def main():
         print(" [Warning] Program force quitting with os._exit(0)")
         utils.cleanup()
         os._exit(0)
+    except ArgumentsError as e:
+        print(f" [Fatal] Vidsrc-search has encountered an error during arguments parsing")
+        print(f" [Fatal] ArgumentsError: {e.message}")
+        print(f" [Fatal] Vidsrc-search terminating with exit code {e.code}")
+        sys.exit(e.code)
     except BaseException as e:
         print()
         print(f" [Fatal] An unknown error was encountered during the execution of vidsrc-search")
@@ -37,7 +46,6 @@ def main():
         print(f" [Info] The issue might fix itself if wait a bit and rerun the program")
         print(f" [Info] Vidsrc-search terminating with exit code 255")
         sys.exit(255)
-    sys.exit(0)
 
 
 if __name__ == "__main__":
