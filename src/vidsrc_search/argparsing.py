@@ -1,4 +1,4 @@
-from typing import List, Tuple, Dict, Any
+from typing import List, Tuple, Dict, Any, Union
 
 
 class ArgumentsError(Exception):
@@ -29,7 +29,7 @@ def is_stacked_flag(flag: str) -> bool:
     return flag[0] == "-" and flag[1] != "-"
 
 
-def process_bool_flag(flag: tuple) -> int | str:
+def process_bool_flag(flag: tuple) -> Union[int, str]:
     if not is_int(flag[1]):
         return flag[1]
     return bool(int(flag[1]))

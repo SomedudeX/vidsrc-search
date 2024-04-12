@@ -28,10 +28,10 @@ def start(args: dict) -> None:
     if args["module"] == ["help", "search"]:
         utils.show_help_search()
         sys.exit(0)
-    if args["module"] == ["libary", "download"]:
+    if args["module"] == ["library", "download"]:
         library.handle_download()
         sys.exit(0)
-    if args["module"] == ["libary", "remove"]:
+    if args["module"] == ["library", "remove"]:
         library.handle_remove()
         sys.exit(0)
     if args["module"] == ["library", "size"]:
@@ -48,6 +48,6 @@ def start(args: dict) -> None:
     if args["module"][0] == "version":
         raise ArgumentsError(f"expected 0 positional argument for command 'version', got {len(args['module']) - 1} instead")
     if len(args["module"]) == 1:
-        raise ArgumentsError(f"command '{args["module"][0]}' requires another positional argument")
+        raise ArgumentsError(f"command '{args['module'][0]}' requires another positional argument")
     raise ArgumentsError(f"received invalid positional command(s): {' '.join(args['module'])}")
 

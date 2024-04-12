@@ -155,4 +155,4 @@ def get_size():
     while size >= 1024:
         size /= 1024
         index += 1
-    print(f"total disk usage by vidsrc-search: {round(size, 2)}{units[index]}")
+    print(f"total disk usage by vidsrc-search: {round(size, 2)} {units[index]}")

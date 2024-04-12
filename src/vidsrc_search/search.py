@@ -107,7 +107,7 @@ def delete_substring(text, start_offset, end_offset):
 
 
 def process_html(path: str) -> None:
-    print(f"infno: processing html")
+    print(f"info: processing html")
     with open(path, "r") as f:
         content = f.readlines()
         content = ''.join(content)
@@ -136,6 +136,11 @@ def show_movie(index: int, results: list, raw: bool, recache: bool):
     url = results[index]["URL"]
     id = results[index]["IMDB ID"]
 
+    if raw:
+        print(f"info: opening #{number} '{title}' in new browser window")
+        webbrowser.open(url)
+        return
+
     print()
     print(f"info: checking for local cache")
     if os.path.exists(os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html")) and recache:
@@ -154,8 +159,7 @@ def show_movie(index: int, results: list, raw: bool, recache: bool):
             print(f"info: writing remote html content to local cache")
             f.write(response.content.decode())
             print(f"info: finished caching html")
-    if not raw:
-        process_html(os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html"))
+    process_html(os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html"))
     print(f"info: opening #{number} '{title}' in new browser window")
     webbrowser.open("file://" + os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html"))
     return
@@ -163,8 +167,8 @@ def show_movie(index: int, results: list, raw: bool, recache: bool):
 
 def handle_search(query: str, raw: bool = True, recache: bool = False) -> None:
     print(f"info: searching json library for '{query}'")
-    print(f"info: open raw website: {raw}")
-    print(f"info: recaching website: {recache}")
+    print(f"info: open raw website: {str(raw).lower()}")
+    print(f"info: recaching website: {str(recache).lower()}")
     results = search_library(query)
     if results == None:
         print(f"info: '{query}' not found in movies library")
