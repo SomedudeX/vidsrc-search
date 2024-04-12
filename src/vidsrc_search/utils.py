@@ -11,41 +11,41 @@ __version__ = "v0.2.0"
 
 
 HELP_TEXT = ("\
-Usage: vidsrc-search <command> [option] [flags]     \n\
+usage: vidsrc-search <command> [option] [flags]     \n\
                                                     \n\
-Available commands:                                 \n\
+available commands:                                 \n\
     help        shows this menu                     \n\
     search      search a movie by name              \n\
     library     actions regarding the movie lib     \n\
                                                     \n\
-Use 'vidsrc-search help <command>' for info on a    \n\
-specific command. Arguments are parsed strictly in  \n\
-the order above                                     \
+use 'vidsrc-search help <command>' for info on a    \n\
+specific command. arguments are strictly parsed in  \n\
+the order specified above                           \
 ")
 
 
 HELP_HELP = ("\
-Usage: vidsrc-search help [option]                  \n\
+usage: vidsrc-search help [option]                  \n\
                                                     \n\
-Available options:                                  \n\
+available options:                                  \n\
     help        shows detailed help for 'help'      \n\
     search      shows detailed help for 'search'    \n\
     library     shows detailed help for 'library'   \n\
                                                     \n\
-Example:                                            \n\
+example:                                            \n\
      vidsrc-search help library                     \n\
      vidsrc-search help help                        \
 ")
 
 
 HELP_SEARCH = ("\
-Usage: vidsrc-search search <option> [flags]        \n\
+usage: vidsrc-search search <option> [flags]        \n\
                                                     \n\
-Required option:                                    \n\
+required option:                                    \n\
     <str>       a movie title that you would like   \n\
                 vidsrc-search to search for         \n\
                                                     \n\
-Optional flags:                                     \n\
+optional flags:                                     \n\
     --raw       when this flag is specified, the    \n\
                 program won't do any preprocessing  \n\
                 to the html                         \n\
@@ -53,24 +53,25 @@ Optional flags:                                     \n\
                 program will re-cache the html to   \n\
                 your computer from vidsrc.to        \n\
                                                     \n\
-Example:                                            \n\
+example:                                            \n\
     vidsrc-search search 'oppenheimer'              \n\
     vidsrc-search search 'avatar'                   \n\
                                                     \n\
-The optional flags will have no effect with         \n\
+the optional flags will have no effect with         \n\
 commands other than 'search'                        \
 ")
 
 
 HELP_LIB = ("\
-Usage: vidsrc-search library <option>               \n\
+usage: vidsrc-search library <option>               \n\
                                                     \n\
-Required options:                                   \n\
+required options:                                   \n\
+    size        prints the program's disk usage     \n\
     remove      removes the movies library          \n\
     download    downloads the latest movies library \n\
                 from https://vidsrc.to              \n\
                                                     \n\
-Example:                                            \n\
+example:                                            \n\
     vidsrc-search library download                  \
 ")
 
@@ -117,65 +118,65 @@ def asyncio_patch() -> None:
         
 
 def check_internet() -> None:
-    print(" [Info] Verifying internet connection")
+    print("info: verifying internet connection")
     
     try: 
-        print(" [Info] Testing connection by pinging google.com")
+        print("info: testing connection by pinging google.com")
         r = requests.get("https://google.com", allow_redirects = False)
         r.raise_for_status()
     except requests.exceptions.HTTPError:
         print() 
-        print(f" [Fatal] An HTTP error was encountered")
-        print(f" [Fatal] This might be due to an issue with the external server")
-        print(f" [Fatal] Vidsrc-search terminating with exit code 127")
+        print(f"fatal: an http error was encountered")
+        print(f"fatal: this might be due to an issue with the external server")
+        print(f"fatal: vidsrc-search terminating with exit code 127")
         sys.exit(127)
     except requests.exceptions.SSLError:
         print() 
-        print(f" [Fatal] Could not establish secure connection")
-        print(f" [Fatal] You might be on a monitored network or using a VPN/Proxy")
-        print(f" [Fatal] Vidsrc-search terminating with exit code 127")
+        print(f"fatal: could not establish secure connection")
+        print(f"fatal: you might be on a monitored network or using a VPN/Proxy")
+        print(f"fatal: vidsrc-search terminating with exit code 127")
         sys.exit(127)
     except requests.exceptions.ConnectionError:
         print()
-        print(f" [Fatal] Could not establish internet connection")
-        print(f" [Fatal] Make sure you are connected to the internet")
-        print(f" [Fatal] Vidsrc-search terminating with exit code 127")
+        print(f"fatal: could not establish internet connection")
+        print(f"fatal: make sure you are connected to the internet")
+        print(f"fatal: vidsrc-search terminating with exit code 127")
         sys.exit(127)
     except requests.exceptions.RequestException as e:
         print()
-        print(f" [Fatal] An unknown network error occurred: {e}")
-        print(f" [Fatal] This could be due to an issue with the external server")
-        print(f" [Fatal] Vidsrc-search terminating with exit code 255")
+        print(f"fatal: an unknown network error occurred: {e}")
+        print(f"fatal: this could be due to an issue with the external server")
+        print(f"fatal: vidsrc-search terminating with exit code 255")
         sys.exit(255)
 
     try:
-        print(" [Info] Testing connection by pinging vidsrc.to")
+        print("info: testing connection by pinging vidsrc.to")
         requests.get("https://vidsrc.to", allow_redirects = False)
     except requests.exceptions.HTTPError:
         print() 
-        print(f" [Fatal] An HTTP error was encountered while pinging vidsrc.to")
-        print(f" [Fatal] This might be due to an issue with the external server")
-        print(f" [Fatal] Vidsrc-search terminating with exit code 127")
+        print(f"fatal: an http error was encountered while pinging vidsrc.to")
+        print(f"fatal: this might be due to an issue with the external server")
+        print(f"fatal: vidsrc-search terminating with exit code 127")
         sys.exit(127)
     except requests.exceptions.ConnectionError:
         print()
-        print(f" [Fatal] Could not reach vidsrc.to")
-        print(f" [Fatal] This might be because of an issue with the")
-        print(f"         external server, or it might be due to")
-        print(f"         that the server is blocked in your region. ")
-        print(f" [Fatal] Vidsrc-search terminating with exit code -1")
+        print(f"fatal: could not reach vidsrc.to")
+        print(f"fatal: this might be because of an issue with the")
+        print(f"       external server, or it might be due to")
+        print(f"       that the server is blocked in your region. ")
+        print(f"fatal: vidsrc-search terminating with exit code -1")
         sys.exit(127)
     except requests.exceptions.RequestException as e:
         print()
-        print(f" [Fatal] An unknown network error occurred: {e}")
-        print(f" [Fatal] This could be due to an issue with the server")
-        print(f" [Fatal] Vidsrc-search terminating with exit code 255")
+        print(f"fatal: an unknown network error occurred: {e}")
+        print(f"fatal: this could be due to an issue with the server")
+        print(f"fatal: vidsrc-search terminating with exit code 255")
         sys.exit(255)
     return
 
 
 def cleanup() -> None:
-    print(" [Info] Performing program cleanup process")
+    print("info: performing program cleanup process")
     path_one = os.path.expanduser("~/.local/vidsrc-search/movie_buffer")
     path_two = os.path.expanduser("~/.local/vidsrc-search/tv_buffer")
     delete_directory_recursive(path_one)
@@ -217,7 +218,7 @@ def parse_entry(page: dict) -> list:
 
 def unite_jsons(movie_index: int, tv_index: int) -> int:
     print()
-    print(f" [Info] Uniting {movie_index + tv_index} json files")
+    print(f"infno: uniting {movie_index + tv_index} json files")
     unparsed_entries = []
     parsed_entries = []
     for i in range(movie_index):
@@ -225,11 +226,11 @@ def unite_jsons(movie_index: int, tv_index: int) -> int:
     for i in range(tv_index):
         unparsed_entries.append(load_json(f"~/.local/vidsrc-search/tv_buffer/{i}.json"))
 
-    print(f" [Info] Parsing {movie_index + tv_index} json files")
+    print(f"info: parsing {movie_index + tv_index} json files")
     for page in unparsed_entries:
         parsed_entries += parse_entry(page[0])
 
-    print(" [Info] Dumping parsed json")
+    print("info: dumping parsed json")
     path = os.path.expanduser("~/.local/vidsrc-search/lib.json")
     with open(path, "w") as f:
         json.dump(parsed_entries, f)

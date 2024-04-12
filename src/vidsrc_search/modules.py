@@ -34,6 +34,9 @@ def start(args: dict) -> None:
     if args["module"] == ["libary", "remove"]:
         library.handle_remove()
         sys.exit(0)
+    if args["module"] == ["library", "size"]:
+        library.get_size()
+        sys.exit(0)
     if args["module"][0] == "search":
         if len(args["module"]) == 2:
             search.handle_search(args["module"][1], args["raw"], args["new"])

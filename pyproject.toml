@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vidsrc-search"
-version = "0.1.5"
+version = "0.2.0"
 description = "A pirate movie watcher written in Python"
 readme = "README.md"
 classifiers = [
@@ -23,8 +23,7 @@ dependencies = [
     "aiohttp",
     "thefuzz",
     "tabulate",
-    "requests",
-    "pywebview"
+    "requests"
 ]
 
 requires-python = ">=3.6"

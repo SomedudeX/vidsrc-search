@@ -28,9 +28,9 @@ def search_library(search_query: str):
     ret = []
     lib_path = os.path.expanduser("~/.local/vidsrc-search/lib.json")
     if not os.path.exists(lib_path):
-        print(" [Fatal] Library does not exist")
-        print(" [Fatal] Please download the library first by using 'vidsrc-search library download'")
-        print(" [Fatal] Vidsrc-search terminating with exit code 2")
+        print("fatal: library does not exist")
+        print("fatal: please download the library first by using 'vidsrc-search library download'")
+        print("fatal: vidsrc-search terminating with exit code 2")
         sys.exit(2)
 
     with open(lib_path, "r") as f: 
@@ -66,13 +66,13 @@ def search_library(search_query: str):
 def ask_open_index(movies: list) -> int:
     while True:
         try:
-            open_index = int(input(" > Choose an index to open in browser: "))
+            open_index = int(input(" > choose an index to open in browser: "))
             if open_index <= 0 or open_index > len(movies):
                 raise ValueError()
             open_index = len(movies) - open_index
             return open_index
         except ValueError:
-            print(" [Error] Please enter a valid value")
+            print("error: please enter a valid value")
             continue
 
 
@@ -85,18 +85,18 @@ def print_movies(movies: list) -> None:
 
 def print_warning() -> None:
     print()
-    print(" [Warning] The content of the movie is hosted on a third party site. The")
-    print("           site is not endorsed by the author or checked for its quality, ")
-    print("           content, or authenticity. The author of vidsrc-search disclaims")
-    print("           any responsibility, express or implied, of the consequences ")
-    print("           as a result your usage or dependence on the website provided ")
-    print("           through this tool. ")
-    print(" [Warning] The following window shown will be the cached contents of vidsrc.to\n")
-    affirm = input(" > I have read and understood the conditions above (Y/n) ")
+    print("warning: the content of the movie is hosted on a third party site. the")
+    print("         site is not endorsed by the author or checked for its quality, ")
+    print("         content, or authenticity. the author of vidsrc-search disclaims")
+    print("         any responsibility, express or implied, of the consequences ")
+    print("         as a result your usage or dependence on the website provided ")
+    print("         through this tool. ")
+    print("warning: the following window shown will be the cached contents of vidsrc.to\n")
+    affirm = input(" > i have read and understood the conditions above (Y/n) ")
     print()
     if not affirm == "Y":
         print()
-        print(" [Info] Terminating per user request")
+        print("info: terminating per user request")
         raise UserWarning
     return
 
@@ -107,7 +107,7 @@ def delete_substring(text, start_offset, end_offset):
 
 
 def process_html(path: str) -> None:
-    print(f" [Info] Processing html")
+    print(f"infno: processing html")
     with open(path, "r") as f:
         content = f.readlines()
         content = ''.join(content)
@@ -122,7 +122,7 @@ def process_html(path: str) -> None:
                 parser.end_positions[0][1] + len(parser.positions_tag[0]) - 1
             )
 
-    print(f" [Info] Writing processed html")
+    print(f"info: writing processed html")
     with open(path, "w") as f:
         f.write(content)
 
@@ -137,38 +137,38 @@ def show_movie(index: int, results: list, raw: bool, recache: bool):
     id = results[index]["IMDB ID"]
 
     print()
-    print(f" [Info] Checking for local cache")
+    print(f"info: checking for local cache")
     if os.path.exists(os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html")) and recache:
-        print(f" [Info] Local cache found: Recaching by requesting remote html per user request")
+        print(f"info: local cache found: recaching by requesting remote html per user request")
         response = requests.get(url)
-        print(f" [Info] Remote html request status code is {response.status_code}")
+        print(f"info: remote html request status code is {response.status_code}")
         with open(os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html"), "w") as f:
-            print(f" [Info] Writing remote html content to local cache")
+            print(f"info: writing remote html content to local cache")
             f.write(response.content.decode())
-            print(f" [Info] Finished recaching html")
+            print(f"info: finished recaching html")
     if not os.path.exists(os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html")):
-        print(f" [Info] Local cache not found: Caching by requesting remote html")
+        print(f"info: local cache not found: Caching by requesting remote html")
         response = requests.get(url)
-        print(f" [Info] Remote html request status code is {response.status_code}")
+        print(f"info: remote html request status code is {response.status_code}")
         with open(os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html"), "w") as f:
-            print(f" [Info] Writing remote html content to local cache")
+            print(f"info: writing remote html content to local cache")
             f.write(response.content.decode())
-            print(f" [Info] Finished caching html")
+            print(f"info: finished caching html")
     if not raw:
         process_html(os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html"))
-    print(f" [Info] Opening #{number} '{title}' in new browser window")
+    print(f"info: opening #{number} '{title}' in new browser window")
     webbrowser.open("file://" + os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html"))
     return
     
 
 def handle_search(query: str, raw: bool = True, recache: bool = False) -> None:
-    print(f" [Info] Searching json library for '{query}'")
-    print(f" [Info] Open raw website: {raw}")
-    print(f" [Info] Recaching website: {recache}")
+    print(f"info: searching json library for '{query}'")
+    print(f"info: open raw website: {raw}")
+    print(f"info: recaching website: {recache}")
     results = search_library(query)
     if results == None:
-        print(f" [Info] '{query}' not found in movies library")
-        print(f" [Info] Vidsrc-search terminating due to entry not found")
+        print(f"info: '{query}' not found in movies library")
+        print(f"info: vidsrc-search terminating due to entry not found")
         return
     print_movies(results)
     open_index = ask_open_index(results)
