@@ -38,7 +38,7 @@ def main():
     except BaseException as e:
         print()
         print(f"fatal: an unknown error was encountered during the execution of vidsrc-search")
-        print(f"fatal: {type(e).__name__}: {e}")
+        print(f"fatal: {type(e).__name__.lower()}: {str(e).lower}")
         utils.cleanup()
         print()
         print(f"info: note: ")

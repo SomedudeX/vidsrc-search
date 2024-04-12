@@ -41,13 +41,11 @@ def start(args: dict) -> None:
         if len(args["module"]) == 2:
             search.handle_search(args["module"][1], args["raw"], args["new"])
             sys.exit(0)
-        else:
-            raise ArgumentsError(f"expected 1 positional argument for command 'search', got {len(args['module']) - 1} instead")
     if args["module"][0] not in AvailableBaseArguments:
         raise ArgumentsError(f"'{args['module'][0]}' is not a valid positional command")
     if args["module"][0] == "version":
         raise ArgumentsError(f"expected 0 positional argument for command 'version', got {len(args['module']) - 1} instead")
     if len(args["module"]) == 1:
         raise ArgumentsError(f"command '{args['module'][0]}' requires another positional argument")
-    raise ArgumentsError(f"received invalid positional command(s): {' '.join(args['module'])}")
+    raise ArgumentsError(f"received invalid positional commands: {' '.join(args['module'])}")
 

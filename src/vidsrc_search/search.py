@@ -6,6 +6,8 @@ import webbrowser
 
 from . import utils
 
+from typing import List, Tuple
+
 from tabulate import tabulate
 from thefuzz.fuzz import partial_ratio, ratio
 from html.parser import HTMLParser
@@ -183,9 +185,9 @@ def handle_search(query: str, raw: bool = True, recache: bool = False) -> None:
 class FileProcesser(HTMLParser):
 
     def __init__(self, *, convert_charrefs: bool = True) -> None:
-        self.start_positions: list[tuple] = []
-        self.end_positions: list[tuple] = []
-        self.positions_tag: list[str] = []
+        self.start_positions: List[Tuple] = []
+        self.end_positions: List[Tuple] = []
+        self.positions_tag: List[str] = []
         self.current_bad_script = 0
         self.current_bad_element = 0
         super().__init__(convert_charrefs=convert_charrefs)

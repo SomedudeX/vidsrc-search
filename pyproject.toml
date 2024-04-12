@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vidsrc-search"
-version = "0.2.1"
+version = "0.2.2"
 description = "A pirate movie watcher written in Python"
 readme = "README.md"
 classifiers = [
@@ -26,10 +26,13 @@ dependencies = [
     "requests"
 ]
 
-requires-python = ">=3.6"
+requires-python = ">=3.8"
 
 [project.urls]
 Homepage = "https://github.com/SomedudeX/vidsrc-search"
+License = "https://github.com/SomedudeX/vidsrc-search/blob/main/LICENSE"
+Changelog = "https://github.com/SomedudeX/vidsrc-search/releases"
+
 
 [project.scripts]
 vidsrc-search = "vidsrc_search.__main__:main"

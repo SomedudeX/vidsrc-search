@@ -7,7 +7,7 @@ import requests
 
 import platform
 
-__version__ = "v0.2.1"
+__version__ = "v0.2.2"
 
 
 HELP_TEXT = ("\
