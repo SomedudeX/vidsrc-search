@@ -1,14 +1,12 @@
 import os
+import sys
 import json
 import time
 import requests
 import asyncio
 import aiohttp
 
-from .utils import cleanup
-
 from . import utils
-from . import json_utils
 
 
 def get_download_size(kind: str) -> int:
@@ -100,9 +98,9 @@ def handle_download():
     shows_size = get_download_size("tv")
     asyncio.run(download_shows(shows_size))
     
-    final_size = json_utils.unite_jsons(movies_size, shows_size)
+    final_size = utils.unite_jsons(movies_size, shows_size)
     expected_size = (movies_size + shows_size) * 15
-    cleanup()
+    utils.cleanup()
 
     end = time.time()
 
@@ -111,4 +109,26 @@ def handle_download():
     print(f" [Info] Link loss from client/server connection issues: ~{round((expected_size - final_size)/expected_size, 2)}%")
     print(f" [Info] Operation took {round(start - end, 2)} seconds to complete")
     print(f" [Info] Library has been downloaded")
+    return
+
+
+def handle_remove() -> None:
+    lib_path = os.path.expanduser("~/.local/vidsrc-search/lib.json")
+    if not os.path.exists(lib_path):
+        print(" [Fatal] Library does not exist")
+        print(" [Fatal] Please download the library first by using 'vidsrc-search library download'")
+        print(" [Fatal] Vidsrc-search terminating with exit code 2")
+        sys.exit(2)
+    with open(lib_path, "r") as f:
+        jsons = json.load(f)
+
+    confirm = input(f" > Are you sure you want to remove ~{len(jsons) * 15} links to movies? (Y/n) ")
+    if not confirm == "Y":
+        print(" [Info] User declined operation")
+        print(" [Info] Vidsrc-search terminating per user request")
+        sys.exit(0)
+
+    print(" [Info] Removing library json file")
+    os.remove(lib_path)
+    print(" [Info] Library json file removed")
     return
