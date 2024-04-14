@@ -8,6 +8,7 @@ usage: vidsrc-search <command> [option] [flags]
 
 available commands:
     help        shows this menu
+    version     displays version info
     search      search a movie by name
     library     actions regarding the movie lib
 
@@ -31,6 +32,18 @@ example usage:
 """
 
 
+HELP_VERSION = """\
+usage: vidsrc-search version
+
+displays the program version and relevant system
+info. please include the output of this command
+when filing a bug report.
+
+example usage:
+    vidsrc-search version\
+"""
+
+
 HELP_SEARCH = """\
 usage: vidsrc-search search <option> [flags]
 
@@ -39,10 +52,10 @@ required option:
                 vidsrc-search to search for
 
 optional flags:
-    --raw       when this flag is specified, the
+    -r, --raw   when this flag is specified, the
                 program won't do any preprocessing
                 to the html
-    --new       when this flag is specified, the
+    -n, --new   when this flag is specified, the
                 program will re-cache the html to
                 your computer from vidsrc.to
 
@@ -50,8 +63,8 @@ example usage:
     vidsrc-search search 'oppenheimer'
     vidsrc-search search 'avatar'
 
-the optional flags will have no effect with
-commands other than 'search'\
+the optional flags will have no effect with commands
+other than 'search'\
 """
 
 
@@ -76,6 +89,9 @@ def run_module(arguments: List[str]) -> None:
         return
     if arguments == ["help", "search"]:
         print(HELP_SEARCH)
+        return
+    if arguments == ["help", "version"]:
+        print(HELP_VERSION)
         return
     if arguments == ["help", "help"]:
         print(HELP_HELP)
