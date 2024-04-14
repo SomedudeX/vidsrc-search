@@ -15,6 +15,7 @@ from .core.library import RemovalManager
 
 if sys.platform == "win32":
     import ctypes
+    import ctypes.wintypes
 else:
     import termios
 
