@@ -9,22 +9,9 @@ import shutil
 import asyncio
 import requests
 
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 from .core.library import RemovalManager
-
-if sys.platform == "win32":
-    import ctypes
-    import ctypes.wintypes
-else:
-    import termios
-
-
-def newline_cursor() -> None:
-    """Prints a newline character if the cursor is not at the leftmost column"""
-    if cursor_pos()[0] not in ["1", 1]:
-        print()
-    return
 
 
 def rmdir_recurse(path: str) -> None:
@@ -94,40 +81,6 @@ def initialize() -> None:
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     return
 
-def cursor_pos() -> Tuple[Any, Any]:
-    """Gets the cursor position from the terminal. Code from stackoverflow (see
-    https://stackoverflow.com/a/69582478/23241571) for more info
-    """
-    if sys.platform == "win32":
-        OldStdinMode = ctypes.wintypes.DWORD()
-        OldStdoutMode = ctypes.wintypes.DWORD()
-        kernel32 = ctypes.windll.kernel32
-        kernel32.GetConsoleMode(kernel32.GetStdHandle(-10), ctypes.byref(OldStdinMode))
-        kernel32.SetConsoleMode(kernel32.GetStdHandle(-10), 0)
-        kernel32.GetConsoleMode(kernel32.GetStdHandle(-11), ctypes.byref(OldStdoutMode))
-        kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
-    else:
-        OldStdinMode = termios.tcgetattr(sys.stdin)
-        _ = termios.tcgetattr(sys.stdin)
-        _[3] = _[3] & ~(termios.ECHO | termios.ICANON)
-        termios.tcsetattr(sys.stdin, termios.TCSAFLUSH, _)
-    try:
-        _ = ""
-        sys.stdout.write("\x1b[6n")
-        sys.stdout.flush()
-        while not (_ := _ + sys.stdin.read(1)).endswith('R'):
-            pass
-        res = re.match(r".*\[(?P<y>\d*);(?P<x>\d*)R", _)
-    finally:
-        if sys.platform == "win32":
-            kernel32.SetConsoleMode(kernel32.GetStdHandle(-10), OldStdinMode)
-            kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), OldStdoutMode)
-        else:
-            termios.tcsetattr(sys.stdin, termios.TCSAFLUSH, OldStdinMode)
-    if res:
-        return (res.group("x"), res.group("y"))
-    return (-1, -1)
-
 
 def check_internet() -> None:
     """Verify computer internet connection"""
@@ -140,7 +93,7 @@ def check_internet() -> None:
         p1.raise_for_status()
         p2.raise_for_status()
     except requests.exceptions.RequestException as e:
-        print(f"fatal: a network error occured: {type(e).__name__.lower()} {str(e).lower()}")
+        print(f"fatal: a network error occurred: {type(e).__name__.lower()} {str(e).lower()}")
         print(f"fatal: vidsrc-search terminating with exit code 255")
         sys.exit(255)
     return
@@ -150,13 +103,13 @@ def unite_jsons(folder_path: str, dest_path: str, raw: bool = True) -> int:
     """Unites all movie/tv show json files from a folder and dumps them to
     another folder. Returns the number of entries parsed.
     """
-    print(f"info: uniting all jsons from '{folder_path}'")
-
     folder_path = os.path.expanduser(folder_path)
     dest_path = os.path.expanduser(dest_path)
     files = get_file(folder_path, ".json")
     for index, value in enumerate(files):
         files[index] = folder_path + value
+
+    print(f"info: uniting all jsons from '{folder_path}'")
 
     if raw:
         parsed_entries = []
@@ -217,7 +170,7 @@ def first_boot_check() -> None:
             print("\nfatal: user failed to complete ritual")
             print("fatal: vidsrc-search terminating with exit code 255")
             sys.exit(255)
-        print("\ninfo: ritual succesfully completed by user")
+        print("\ninfo: ritual successfully completed by user")
         print("info: rerun vidsrc-search to gain access to the rest of the program")
         print("info: vidsrc-search terminating with exit code 0")
         required_path_one = os.path.expanduser("~/.local/vidsrc-search/movie_buffer")

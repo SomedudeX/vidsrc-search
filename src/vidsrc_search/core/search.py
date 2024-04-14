@@ -16,7 +16,7 @@ from thefuzz.fuzz import partial_ratio, ratio
 from html.parser import HTMLParser
 
 
-class FileProcesser(HTMLParser):
+class FileProcessor(HTMLParser):
     """Processes the HTML file downloaded from vidsrc.to. This class is derived
     from the HTMLParser class in Python's standard library. See its
     documentation for more information.
@@ -280,7 +280,7 @@ class SearchHandler:
             content = f.readlines()
             content = ''.join(content)
             while True:
-                parser = FileProcesser()
+                parser = FileProcessor()
                 parser.feed(content)
                 if len(parser.positions_tag) == 0:
                     break

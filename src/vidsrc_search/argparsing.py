@@ -29,7 +29,7 @@ def is_int(arg: str) -> bool:
 
 def is_stacked_flag(flag: str) -> bool:
     """Whether an argument is a stacked flag (e.g. -abc)"""
-    return len(flag) >= 1 and \
+    return len(flag) >= 2 and \
            flag[0] == "-" and \
            flag[1] != "-"
 
@@ -65,7 +65,7 @@ def parse_arguments(argv: List[str]) -> Dict[str, Any]:
         if flag == "--new" or flag == "-n":
             parsed_arguments["new"] = True
             continue
-        if is_stacked_flag(flag[0]):
-            raise ArgumentsError(f"stacked flag '{flag[0]}' not allowed", 1)
-        raise ArgumentsError(f"invalid flag '{flag[0]}' received", 1)
+        if is_stacked_flag(flag):
+            raise ArgumentsError(f"stacked flag '{flag}' not allowed", 1)
+        raise ArgumentsError(f"invalid flag '{flag}' received", 1)
     return parsed_arguments

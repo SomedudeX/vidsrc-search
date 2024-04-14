@@ -71,7 +71,7 @@ class DownloadManager:
             self.expected_size += utils.unite_jsons(f"~/.local/vidsrc-search/{item}_buffer/", f"~/.local/vidsrc-search/{item}.json")
         end_time = time.time()
 
-        RemovalManager.remove_library()   # Removing previously downloaded libary
+        RemovalManager.remove_library()   # Removing previously downloaded library
         utils.unite_jsons(f"~/.local/vidsrc-search/", f"~/.local/vidsrc-search/lib.json", raw=False)
         utils.cleanup()
         self.time = start_time - end_time
@@ -135,7 +135,7 @@ class DownloadManager:
         folder = f"~/.local/vidsrc-search/{type}_buffer/"
         urls = [f"{domain}{i}" for i in range(total)]
         print(f"info: initialized {type} download with {total} links to jsons")
-        print(f"info: waiting response from {total} server requests")
+        print(f"info: waiting for response(s) from {total} server requests")
 
         async with aiohttp.ClientSession() as session:
             tasks = [DownloadManager.fetch_downloads(session, url) for url in urls]
@@ -155,7 +155,7 @@ class RemovalManager:
 
     @staticmethod
     def remove_library() -> None:
-        """Removes the libary downloaded from vidsrc"""
+        """Removes the library downloaded from vidsrc"""
         utils.rmfile(Library.lib_path)
         return
 
@@ -199,7 +199,7 @@ class SizeManager:
     """A manager for printing the size occupied by the program"""
 
     def __init__(self) -> None:
-        """Initializes a SizeManager by calculating the libary size"""
+        """Initializes a SizeManager by calculating the library size"""
         self.size = utils.get_folder_size_recursive(Library.root_path)
         return
 
