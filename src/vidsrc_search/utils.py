@@ -21,6 +21,7 @@ def rmdir_recurse(path: str) -> None:
         shutil.rmtree(path)
     return
 
+
 def rmfile(path: str) -> None:
     path = os.path.expanduser(path)
     if os.path.exists(path):

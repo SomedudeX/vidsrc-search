@@ -166,7 +166,6 @@ class SearchHandler:
         self.new = args["new"]
         return
 
-
     def begin_search(self) -> None:
         """Handles searching the movie library"""
         self.process_query()

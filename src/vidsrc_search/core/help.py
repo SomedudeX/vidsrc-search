@@ -9,7 +9,8 @@ usage: vidsrc-search <command> [option] [flags]
 available commands:
     help        shows this menu
     version     displays version info
-    search      search a movie by name
+    cache       actions regarding movie cache
+    search      search a movie by its name
     library     actions regarding the movie lib
 
 use 'vidsrc-search help <command>' for info on a
@@ -53,8 +54,8 @@ required option:
 
 optional flags:
     -r, --raw   when this flag is specified, the
-                program won't do any preprocessing
-                to the html
+                program will open the original
+                website instead of caching the html
     -n, --new   when this flag is specified, the
                 program will re-cache the html to
                 your computer from vidsrc.to
