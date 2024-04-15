@@ -3,7 +3,7 @@ import platform
 from typing import List
 from ..argparsing import ArgumentsError
 
-__version__ = "v0.2.3"
+__version__ = "v0.2.4.dev"
 
 
 def print_version() -> None:

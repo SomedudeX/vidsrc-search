@@ -9,7 +9,6 @@ usage: vidsrc-search <command> [option] [flags]
 available commands:
     help        shows this menu
     version     displays version info
-    cache       actions regarding movie cache
     search      search a movie by its name
     library     actions regarding the movie lib
 
