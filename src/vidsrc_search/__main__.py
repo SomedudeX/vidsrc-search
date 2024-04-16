@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import re
 import sys
 
 from . import utils
@@ -28,8 +29,9 @@ def main() -> int:
         print(f" • vidsrc-search terminating with exit code {e.code}")
         return e.code
     except Exception as e:
+        name = re.sub(r"(?<!^)(?=[A-Z])", " ", type(e).__name__).lower()
         print(f"\n • {str(e).lower()}")
-        print(f" • vidsrc-search received an unknown {type(e).__name__.lower()}")
+        print(f" • vidsrc-search received an unknown {name}")
         print(f" • vidsrc-search terminating with exit code 255")
         return 255
     finally:
