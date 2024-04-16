@@ -2,71 +2,18 @@
 # not grouped in any particular order.
 
 import os
+import re
 import sys
 import json
 import shutil
-import inspect
 import asyncio
 import requests
 
 from typing import Any, Dict, List
-
-
-class CallerInfo:
-    """The info of the caller of the function"""
-    lineno = -1
-    filename = ""
-
-
-class Logger:
-    """A Logger class that prints to the console"""
-
-    def __init__(
-        self,
-        emit: bool = False
-    ) -> None:
-        """Initiates a Logger class"""
-        self.emit = emit
-        return
-
-    def change_emit_level(
-        self,
-        new_emit: bool = False
-    ) -> None:
-        """Sets a new emit level; anything above this level will be logged"""
-        self.emit = new_emit
-        return
-
-    def log(
-        self,
-        message: str,
-    ) -> None:
-        """Log the specified message to the console with `info` severity"""
-        caller = get_caller_info()
-        header = f"\033[2m{caller.filename}:{caller.lineno}"
-        if self.emit:
-            print(f"{header} {message}\033[0m")
-        return
-
-LogUtils = Logger()
-
-# This import statement needs to be placed below the Logger declaration
-# to prevent Python complaining about a circular import.
+from .term import Logger
 from .core.library import RemovalManager
 
-
-def get_caller_info() -> CallerInfo:
-    """Gets the information of the caller of the function via python inspect"""
-    stacktrace = inspect.stack()
-    frame_info = inspect.getframeinfo(stacktrace[2][0])
-    if sys.platform == "win32":
-        filename = frame_info.filename.split("\\")
-    else:
-        filename = frame_info.filename.split("/")
-    ret = CallerInfo()
-    ret.filename = filename[len(filename) - 1]
-    ret.lineno = frame_info.lineno
-    return ret
+LogUtils = Logger()
 
 
 def rmdir_recurse(path: str) -> None:
@@ -88,7 +35,6 @@ def rmfile(path: str) -> None:
 def get_file(path: str, extension: str) -> List[str]:
     """Gets all files in the path that has the specified extension"""
     files = []
-    LogUtils.log(f"getting all files that end in '{extension}' from '{path}'")
     for (_, dirnames, filenames) in os.walk(os.path.expanduser(path)):
         files.extend(filenames)
         files.extend(dirnames)
@@ -101,7 +47,6 @@ def get_file(path: str, extension: str) -> List[str]:
 
 def get_folder_size_recursive(folder_path: str) -> str:
     """Recursively explore a folder to return the size of it"""
-    LogUtils.log(f"getting the size of '{folder_path}' recursively")
     total_size = 0
     folder_path = os.path.expanduser(folder_path)
     for dirpath, _, filenames in os.walk(folder_path):
@@ -133,7 +78,9 @@ def initialize(args: Dict[str, Any]) -> None:
         import platform
         global LogUtils
         from .core.version import __version__
-        LogUtils.change_emit_level(True)
+        from .term import enable_debug
+
+        enable_debug()
         LogUtils.log(f"vidsrc-search {__version__}")
         LogUtils.log(f"{platform.python_implementation().lower()} {platform.python_version().lower()}")
         LogUtils.log(f"{platform.platform(True, True).lower()} {platform.machine().lower()}")
@@ -163,7 +110,8 @@ def check_internet() -> None:
         p2 = requests.get(ping_url_two, allow_redirects=False)
         p2.raise_for_status()
     except requests.exceptions.RequestException as e:
-        print(f"• a network error occurred: {type(e).__name__.lower()} {str(e).lower()}")
+        name = re.sub(r"(?<!^)(?=[A-Z])", " ", type(e).__name__).lower()
+        print(f"• an unknown network error occurred: {name}")
         print(f"• vidsrc-search terminating with exit code 255")
         sys.exit(255)
     return
@@ -173,9 +121,10 @@ def unite_jsons(folder_path: str, dest_path: str, raw: bool = True) -> int:
     """Unites all movie/tv show json files from a folder and dumps them to
     another folder. Returns the number of entries parsed.
     """
-    LogUtils.log(f"uniting jsons from {folder_path} to {dest_path} (raw={raw})")
     folder_path = os.path.expanduser(folder_path)
     dest_path = os.path.expanduser(dest_path)
+    LogUtils.log(f"uniting jsons from {folder_path} (raw={raw})")
+
     files = get_file(folder_path, ".json")
     for index, value in enumerate(files):
         files[index] = folder_path + value
@@ -195,8 +144,9 @@ def unite_jsons(folder_path: str, dest_path: str, raw: bool = True) -> int:
         for item in unparsed_entries:
             parsed_entries += item
 
+    LogUtils.log(f"dumping united jsons to {dest_path}")
     with open(dest_path, "w") as file:
-        json.dump(parsed_entries, file, indent=4)
+        json.dump(parsed_entries, file)
     return len(parsed_entries)
 
 
@@ -218,9 +168,3 @@ def parse_entry(page: Dict) -> List:
         if "embed_url_imdb" in entry:
             ret.append(entry)
     return ret
-
-def check_tty() -> None:
-    """Checks whether the console is a tty, and print a warning if not"""
-    if not sys.stdin.isatty():
-        print(" • warning: vidsrc-search is not being run in a tty")
-        print(" • warning: some features may not work correctly")
