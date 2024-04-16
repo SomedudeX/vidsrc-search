@@ -4,7 +4,7 @@ from typing import Any, Dict, List
 from ..argparsing import ArgumentsError
 from ..utils import Logger
 
-__version__ = "v0.2.4.dev"
+__version__ = "v0.2.4"
 LogVersion = Logger()
 
 

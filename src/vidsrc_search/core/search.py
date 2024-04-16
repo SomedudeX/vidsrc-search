@@ -174,6 +174,9 @@ class SearchHandler:
         self.query = query
         self.results = []
 
+        LogSearch.log("checking whether terminal is a tty")
+        utils.check_tty()
+
         self.library = Library()
         self.library.check_library()
 
@@ -187,8 +190,7 @@ class SearchHandler:
         print(f" • searching json library for '{self.query}'")
         print(f" • open raw website: {str(self.raw).lower()}")
         print(f" • recaching website: {str(self.new).lower()}")
-        LogSearch.log("checking whether terminal is a tty")
-        utils.check_tty()
+
         self.manager = SearchManager(self.query)
         self.manager.search_library()
         self.results = self.manager.results
@@ -240,14 +242,14 @@ class SearchHandler:
         id = self.results[index]["IMDB ID"]
 
         if self.raw:
-            print(f"• opening '{title}' in new browser tab")
+            print(f" • opening '{title}' in new browser tab")
             webbrowser.open(url)
             return
 
         if self.new or not os.path.exists(os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html")):
             SearchHandler.cache_movie(url, f"~/.local/vidsrc-search/cache/{id}.html")
         SearchHandler.process_html(os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html"))
-        print(f"• opening '{title}' in new browser tab")
+        print(f" • opening '{title}' in new browser tab")
         webbrowser.open("file://" + os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html"))
         return
 

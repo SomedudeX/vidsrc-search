@@ -17,12 +17,12 @@ available commands:
 
 optional flags:
     -d, --debug enables debug logging and disables
-                certain features (e.g. progressbar)
+                certain features (e.g. progress bars)
 
 use 'vidsrc-search help <command>' for info on a
-specific command. arguments are strictly parsed in
-the order specified above. when filing a bug report,
-please be sure to use the '--debug' flag in log.\
+specific command. arguments are strictly parsed in the
+order specified above. when filing a bug report, please
+be sure to use the '--debug' flag in log.\
 """
 
 
@@ -44,9 +44,9 @@ example usage:
 HELP_VERSION = """\
 usage: vidsrc-search version
 
-displays the program version and relevant system
-info. please include the output of this command
-when filing a bug report.
+displays the program version and relevant system info.
+please include the output of this command when filing
+a bug report.
 
 example usage:
     vidsrc-search version\
@@ -62,15 +62,15 @@ required option:
 
 optional flags:
     -r, --raw   when this flag is specified, the
-                program will open the original
-                website instead of caching the html
+                program will open the original website
+                instead of caching the html
     -n, --new   when this flag is specified, the
-                program will re-cache the html to
-                your computer from vidsrc.to
+                program will re-cache the html to your
+                computer from vidsrc.to
 
 example usage:
     vidsrc-search search 'oppenheimer'
-    vidsrc-search search 'avatar'
+    vidsrc-search search 'avatar' --new
 
 the optional flags will have no effect with commands
 other than 'search'\
@@ -87,7 +87,8 @@ required options:
                 from https://vidsrc.to
 
 example usage:
-    vidsrc-search library download\
+    vidsrc-search library download
+    vidsrc-search library remove --noint\
 """
 
 
