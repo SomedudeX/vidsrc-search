@@ -21,22 +21,34 @@ usage: vidsrc-search <command> [option] [flags]
 available commands:
     help        shows this menu
     version     displays version info
-    search      search a movie by name
+    search      search a movie by its name
     library     actions regarding the movie lib
 
+optional flags:
+    -d, --debug enables debug logging and disables
+                certain features (e.g. progress bars)
+
 use 'vidsrc-search help <command>' for info on a
-specific command. arguments are strictly parsed in
-the order specified above
+specific command. arguments are strictly parsed in the
+order specified above. when filing a bug report, please
+be sure to use the '--debug' flag in log.
 ```
 
-## Implementation
+## Notes
 
-VidSrc provides an API to access links to specific movies hosted on their website. When you select a movie to be viewed, this program will cache the site data from VidSrc into an html file stored on disk. The program then does some preprocessing to the html webpage to remove annoying ad/redirect elements.
+This project has been tested on the following requirements and platforms:
 
-If you would like to view the raw website without preprocessing, you can disable this feature using the `--raw` flag. Additionally, you can use the `--new` flag to re-cache an already cached website.
+ * CPython 3.8.19, 3.9.1, 3.12.2
+ * Windows 11, macOS 14, Debian Linux
 
 ## Contributing
 
-Opening issues are the preferred way of contributing. Please include the steps to reproduce, what you expected to happen versus what actually happened, as well as the output of `vidsrc-search version` in your issue.
+Opening issues on GitHub are the preferred way of contributing. Please include the steps to reproduce, what you expected to happen versus what actually happened, as well as the output of `vidsrc-search` with the `--debug` flag in your issue.
 
 When filing issues, please also make sure that you are using `vidsrc-search` by directly cloning the repository as opposed to downloading from pip. This will make sure you have the most up-to-date version of `vidsrc-search`.
+
+## Links
+
+ * [License](https://github.com/SomedudeX/vidsrc-search/blob/main/LICENSE)
+ * [Github](https://github.com/SomedudeX/vidsrc-search)
+ * [PyPi](https://pypi.org/project/vidsrc-search/)
