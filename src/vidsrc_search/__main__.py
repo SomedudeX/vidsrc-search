@@ -12,28 +12,28 @@ from .argparsing import ArgumentsError
 
 def main() -> int:
     try:
-        utils.initialize()
         args = argparsing.parse_arguments(sys.argv)
+        utils.initialize(args)
         return modules.start(args)
     except UserWarning:
-        print(f"warning: vidsrc-search received user warning")
-        print(f"warning: vidsrc-search terminating with exit code 1")
+        print(f" • vidsrc-search received user warning")
+        print(f" • vidsrc-search terminating with exit code 1")
         return 1
     except KeyboardInterrupt:
-        print(f"\nwarning: vidsrc-search received keyboard interrupt")
-        print(f"warning: vidsrc-search terminating with exit code 1")
+        print(f"\n • vidsrc-search received keyboard interrupt")
+        print(f" • vidsrc-search terminating with exit code 1")
         return 1
     except ArgumentsError as e:
-        print(f"fatal: {e.message}")
-        print(f"fatal: vidsrc-search received an arguments error")
-        print(f"fatal: vidsrc-search terminating with exit code {e.code}")
+        print(f" • inapt arguments: {e.message}")
+        print(f" • vidsrc-search terminating with exit code {e.code}")
         return e.code
     except Exception as e:
-        print(f"fatal: {str(e).lower()}")
-        print(f"fatal: vidsrc-search received and unknown {type(e).__name__.lower()}")
-        print(f"fatal: vidsrc-search terminating with exit code 255")
+        print(f"\n • {str(e).lower()}")
+        print(f" • vidsrc-search received an unknown {type(e).__name__.lower()}")
+        print(f" • vidsrc-search terminating with exit code 255")
         return 255
     finally:
+        # Cleanup needs to happen no matter what
         utils.cleanup()
 
 
