@@ -2,16 +2,71 @@
 # not grouped in any particular order.
 
 import os
-import re
 import sys
 import json
 import shutil
+import inspect
 import asyncio
 import requests
 
 from typing import Any, Dict, List
 
+
+class CallerInfo:
+    """The info of the caller of the function"""
+    lineno = -1
+    filename = ""
+
+
+class Logger:
+    """A Logger class that prints to the console"""
+
+    def __init__(
+        self,
+        emit: bool = False
+    ) -> None:
+        """Initiates a Logger class"""
+        self.emit = emit
+        return
+
+    def change_emit_level(
+        self,
+        new_emit: bool = False
+    ) -> None:
+        """Sets a new emit level; anything above this level will be logged"""
+        self.emit = new_emit
+        return
+
+    def log(
+        self,
+        message: str,
+    ) -> None:
+        """Log the specified message to the console with `info` severity"""
+        caller = get_caller_info()
+        header = f"\033[2m{caller.filename}:{caller.lineno}"
+        if self.emit:
+            print(f"{header} {message}\033[0m")
+        return
+
+LogUtils = Logger()
+
+# This import statement needs to be placed below the Logger declaration
+# to prevent Python complaining about a circular import.
 from .core.library import RemovalManager
+
+
+def get_caller_info() -> CallerInfo:
+    """Gets the information of the caller of the function via python inspect"""
+    stacktrace = inspect.stack()
+    frame_info = inspect.getframeinfo(stacktrace[2][0])
+    if sys.platform == "win32":
+        filename = frame_info.filename.split("\\")
+    else:
+        filename = frame_info.filename.split("/")
+    ret = CallerInfo()
+    ret.filename = filename[len(filename) - 1]
+    ret.lineno = frame_info.lineno
+    return ret
 
 
 def rmdir_recurse(path: str) -> None:
@@ -23,6 +78,7 @@ def rmdir_recurse(path: str) -> None:
 
 
 def rmfile(path: str) -> None:
+    """Uses os.remove to delete a file"""
     path = os.path.expanduser(path)
     if os.path.exists(path):
         os.remove(path)
@@ -32,6 +88,7 @@ def rmfile(path: str) -> None:
 def get_file(path: str, extension: str) -> List[str]:
     """Gets all files in the path that has the specified extension"""
     files = []
+    LogUtils.log(f"getting all files that end in '{extension}' from '{path}'")
     for (_, dirnames, filenames) in os.walk(os.path.expanduser(path)):
         files.extend(filenames)
         files.extend(dirnames)
@@ -44,6 +101,7 @@ def get_file(path: str, extension: str) -> List[str]:
 
 def get_folder_size_recursive(folder_path: str) -> str:
     """Recursively explore a folder to return the size of it"""
+    LogUtils.log(f"getting the size of '{folder_path}' recursively")
     total_size = 0
     folder_path = os.path.expanduser(folder_path)
     for dirpath, _, filenames in os.walk(folder_path):
@@ -61,6 +119,7 @@ def get_folder_size_recursive(folder_path: str) -> str:
 
 def cleanup() -> None:
     """Removes buffer directories created during the execution of the program"""
+    LogUtils.log(f"performing program cleanup sequence")
     rmdir_recurse(os.path.expanduser("~/.config/pymovie")) # Pre v0.1.4 folder
     rmfile("~/.local/vidsrc-search/movie.json")
     rmfile("~/.local/vidsrc-search/tv.json")
@@ -68,9 +127,17 @@ def cleanup() -> None:
     return
 
 
-def initialize() -> None:
+def initialize(args: Dict[str, Any]) -> None:
     """Called when the program first starts. Prepares program for execution"""
-    first_boot_check()
+    if args["dbg"]:
+        import platform
+        global LogUtils
+        from .core.version import __version__
+        LogUtils.change_emit_level(True)
+        LogUtils.log(f"vidsrc-search {__version__}")
+        LogUtils.log(f"{platform.python_implementation().lower()} {platform.python_version().lower()}")
+        LogUtils.log(f"{platform.platform(True, True).lower()} {platform.machine().lower()}")
+    LogUtils.log("initializing directories")
     required_path_one = os.path.expanduser("~/.local/vidsrc-search/movie_buffer")
     required_path_two = os.path.expanduser("~/.local/vidsrc-search/tv_buffer")
     required_path_three = os.path.expanduser("~/.local/vidsrc-search/cache")
@@ -79,6 +146,7 @@ def initialize() -> None:
     os.makedirs(required_path_three, exist_ok=True)
 
     if sys.platform in ["win32", "cygwin", "msys"]:  # Windows has some issues with asyncio
+        LogUtils.log("patching windows asyncio")
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     return
 
@@ -86,16 +154,17 @@ def initialize() -> None:
 def check_internet() -> None:
     """Verify computer internet connection"""
     try:
-        print("info: verifying internet connection")
         ping_url_one = "https://google.com"
         ping_url_two = "https://vidsrc.to"
+        LogUtils.log(f"checking internet connection by pinging {ping_url_one}")
         p1 = requests.get(ping_url_one, allow_redirects=False)
-        p2 = requests.get(ping_url_two, allow_redirects=False)
         p1.raise_for_status()
+        LogUtils.log(f"checking internet connection by pinging {ping_url_two}")
+        p2 = requests.get(ping_url_two, allow_redirects=False)
         p2.raise_for_status()
     except requests.exceptions.RequestException as e:
-        print(f"fatal: a network error occurred: {type(e).__name__.lower()} {str(e).lower()}")
-        print(f"fatal: vidsrc-search terminating with exit code 255")
+        print(f"• a network error occurred: {type(e).__name__.lower()} {str(e).lower()}")
+        print(f"• vidsrc-search terminating with exit code 255")
         sys.exit(255)
     return
 
@@ -104,13 +173,12 @@ def unite_jsons(folder_path: str, dest_path: str, raw: bool = True) -> int:
     """Unites all movie/tv show json files from a folder and dumps them to
     another folder. Returns the number of entries parsed.
     """
+    LogUtils.log(f"uniting jsons from {folder_path} to {dest_path} (raw={raw})")
     folder_path = os.path.expanduser(folder_path)
     dest_path = os.path.expanduser(dest_path)
     files = get_file(folder_path, ".json")
     for index, value in enumerate(files):
         files[index] = folder_path + value
-
-    print(f"info: uniting all jsons from '{folder_path}'")
 
     if raw:
         parsed_entries = []
@@ -126,8 +194,6 @@ def unite_jsons(folder_path: str, dest_path: str, raw: bool = True) -> int:
             unparsed_entries.append(load_json(file))
         for item in unparsed_entries:
             parsed_entries += item
-
-    print(f"info: dumping united jsons to '{dest_path}'\n")
 
     with open(dest_path, "w") as file:
         json.dump(parsed_entries, file, indent=4)
@@ -153,32 +219,8 @@ def parse_entry(page: Dict) -> List:
             ret.append(entry)
     return ret
 
-
-def first_boot_check() -> None:
-    """Checks whether vidsrc-search is being booted up the first time"""
-    if not os.path.exists(os.path.expanduser("~/.local/vidsrc-search")):
-        print(
-            "\nit seems as though you are opening vidsrc-search for the first time.\n"
-            "because of this, you need to complete a ritual before proceeding. \n"
-            "please take your right hand and place it on your heart, and type the\n"
-            "following and press enter: "
-            "\n\n    'i solemnly swear that i am up to no good'"
-            "\n"
-        )
-
-        message = input(" > ")
-        if not message.lower() == "i solemnly swear that i am up to no good":
-            print("\nfatal: user failed to complete ritual")
-            print("fatal: vidsrc-search terminating with exit code 255")
-            sys.exit(255)
-        print("\ninfo: ritual successfully completed by user")
-        print("info: rerun vidsrc-search to gain access to the rest of the program")
-        print("info: vidsrc-search terminating with exit code 0")
-        required_path_one = os.path.expanduser("~/.local/vidsrc-search/movie_buffer")
-        required_path_two = os.path.expanduser("~/.local/vidsrc-search/tv_buffer")
-        required_path_three = os.path.expanduser("~/.local/vidsrc-search/cache")
-        os.makedirs(required_path_one, exist_ok=True)
-        os.makedirs(required_path_two, exist_ok=True)
-        os.makedirs(required_path_three, exist_ok=True)
-        sys.exit(0)
-    return
+def check_tty() -> None:
+    """Checks whether the console is a tty, and print a warning if not"""
+    if not sys.stdin.isatty():
+        print(" • warning: vidsrc-search is not being run in a tty")
+        print(" • warning: some features may not work correctly")
