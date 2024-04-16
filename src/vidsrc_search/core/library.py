@@ -273,7 +273,7 @@ class SizeManager:
         return
 
     def print_size(self) -> None:
-        print(f" • total disk usage by vidsrc-search: {self.size}")
+        print(f" • total disk usage by vidsrc-search: ~{self.size}")
         return
 
 

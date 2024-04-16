@@ -88,7 +88,7 @@ required options:
 
 example usage:
     vidsrc-search library download
-    vidsrc-search library remove --noint\
+    vidsrc-search library remove\
 """
 
 
