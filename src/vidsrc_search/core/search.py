@@ -6,6 +6,7 @@ import requests
 import webbrowser
 
 from .. import utils
+from ..utils import Logger
 from ..argparsing import ArgumentsError
 from .library import Library
 
@@ -14,6 +15,9 @@ from typing import Any, Dict, List, Tuple, Union
 from tabulate import tabulate
 from thefuzz.fuzz import partial_ratio, ratio
 from html.parser import HTMLParser
+
+LogSearch = Logger()
+
 
 
 class FileProcessor(HTMLParser):
@@ -28,6 +32,7 @@ class FileProcessor(HTMLParser):
 
     def __init__(self) -> None:
         """Initializes a FileProcessor and its parent class"""
+        LogSearch.log(f"initialized fileprocessor (derived class of htmlparser)")
         self.start_positions: List[Tuple] = []  # bad start tags
         self.end_positions: List[Tuple] = []    # bad end tags
         self.positions_tag: List[str] = []      # type of tag
@@ -50,6 +55,7 @@ class FileProcessor(HTMLParser):
             return
         for attr in attrs:
             if self.bad_script(attr):
+                LogSearch.log(f"bad start tag detected")
                 self._current_bad_script += 1
                 self.start_positions.append(self.getpos())
         return
@@ -65,6 +71,7 @@ class FileProcessor(HTMLParser):
         if tag not in ["script"]:
             return
         if self._current_bad_script == 1:
+            LogSearch.log(f"bad end tag detected")
             self._current_bad_script = 0
             self.end_positions.append(self.getpos())
             self.positions_tag.append("</script>")
@@ -92,22 +99,27 @@ class SearchManager:
         query: str
     ) -> None:
         """Initializes a SearchManager object with a query"""
+        LogSearch.log(f"initializing a searchmanager instance")
         self.query: str = query
         self.results: List[Dict] = []
         return
 
     def search_library(self) -> None:
         """Initiates a library search with the query specified during init"""
+        LogSearch.log(f"searching library")
         library = Library()
         library.check_library()
+        LogSearch.log(f"reading library")
         with open(library.lib_path, "r") as f:
             library = f.read()
         library = json.loads(library)
 
+        LogSearch.log(f"checking library entries for potential match")
         for entry in library:
             self.check_entry(entry)
         self.sort_results()
 
+        LogSearch.log(f"processing matched entries")
         while len(self.results) > 20:
             del self.results[len(self.results) - 1]
         for index, result in enumerate(self.results):
@@ -159,6 +171,7 @@ class SearchHandler:
         args: Dict[str, Any]
     ) -> None:
         """Initializes a SearchHandler object"""
+        LogSearch.log(f"initialized a searchhandler with the query '{query}'")
         self.query = query
         self.results = []
 
@@ -166,19 +179,22 @@ class SearchHandler:
         self.new = args["new"]
         return
 
-    def begin_search(self) -> None:
+    def handle_search(self) -> None:
         """Handles searching the movie library"""
         self.process_query()
-        print(f"info: searching json library for '{self.query}'")
-        print(f"info: open raw website: {str(self.raw).lower()}")
-        print(f"info: recaching website: {str(self.new).lower()}")
+        print(f" • searching json library for '{self.query}'")
+        print(f" • open raw website: {str(self.raw).lower()}")
+        print(f" • recaching website: {str(self.new).lower()}")
+        LogSearch.log("checking whether terminal is a tty")
+        utils.check_tty()
         self.manager = SearchManager(self.query)
         self.manager.search_library()
         self.results = self.manager.results
         if len(self.results) == 0 :
-            print(f"info: '{self.query}' not found in movies library")
-            print(f"info: vidsrc-search terminating due to entry not found")
+            print(f" • '{self.query}' not found in movies library")
+            print(f" • vidsrc-search terminating due to entry not found")
             return
+        LogSearch.log(f"pretty printing movies with tabulate")
         self.print_movies()
         open_index = self.ask_open_index()
         self.show_movie(open_index)
@@ -200,33 +216,36 @@ class SearchHandler:
         while True:
             try:
                 open_index = int(input(" > choose an index to open in browser: "))
+                LogSearch.log(f"validating chosen open index")
                 if open_index <= 0 or open_index > len(self.results):
                     raise ValueError()
                 open_index = len(self.results) - open_index
                 return open_index
             except ValueError:
-                print("error: please enter a valid value")
+                print(" • please enter a valid value")
                 continue
 
     def show_movie(self, index: int) -> None:
         """Shows the movie chosen by the user in their browser"""
-        SearchHandler.print_warning()
+        LogSearch.log(f"checking internet")
         utils.check_internet()
+        LogSearch.log(f"printing warning")
+        SearchHandler.print_warning()
 
-        number = index + 1
+        LogSearch.log(f"gathering movie information from library")
         title = self.results[index]["Title"]
         url = self.results[index]["URL"]
         id = self.results[index]["IMDB ID"]
 
         if self.raw:
-            print(f"info: opening #{number} '{title}' in new browser window")
+            print(f"• opening '{title}' in new browser tab")
             webbrowser.open(url)
             return
 
         if self.new or not os.path.exists(os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html")):
             SearchHandler.cache_movie(url, f"~/.local/vidsrc-search/cache/{id}.html")
         SearchHandler.process_html(os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html"))
-        print(f"info: opening #{number} '{title}' in new browser window")
+        print(f"• opening '{title}' in new browser tab")
         webbrowser.open("file://" + os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html"))
         return
 
@@ -241,17 +260,17 @@ class SearchHandler:
     def print_warning() -> None:
         """Prints the warning before showing a movie"""
         print()
-        print("warning: the content of the movie is hosted on a third party site. the")
-        print("         site is not endorsed by the author or checked for its quality, ")
-        print("         content, or authenticity. the author of vidsrc-search disclaims")
-        print("         any responsibility, express or implied, of the consequences ")
-        print("         as a result your usage or dependence on the website provided ")
-        print("         through this tool. ")
-        print("warning: the following window shown will be the cached contents of vidsrc.to\n")
+        print(" • warning: the content of the movie is hosted on a third party site. the")
+        print("            site is not endorsed by the author or checked for its quality, ")
+        print("            content, or authenticity. the author of vidsrc-search disclaims")
+        print("            any responsibility, express or implied, of the consequences ")
+        print("            as a result your usage or dependence on the website provided ")
+        print("            through this tool. ")
+        print(" • warning: the following window shown will be the cached contents of vidsrc.to\n")
         affirm = input(" > i have read and understood the conditions above (Y/n) ")
         print()
         if not affirm == "Y":
-            print("info: terminating per user request")
+            print(" • terminating per user request")
             raise UserWarning
         return
 
@@ -259,11 +278,10 @@ class SearchHandler:
     def cache_movie(url: str, path: str) -> None:
         """Caches a movie html to disk"""
         response = requests.get(url)
-        print(f"info: caching movie from remote html")
-        print(f"info: remote html request status code is {response.status_code}")
+        LogSearch.log(f"caching movie from '{url}'")
+        LogSearch.log(f"remote html response status code is {response.status_code}")
         with open(os.path.expanduser(path), "w") as f:
             f.write(response.content.decode())
-            print(f"info: finished caching html")
 
     @staticmethod
     def delete_substring(text, start_offset, end_offset):
@@ -274,7 +292,8 @@ class SearchHandler:
     @staticmethod
     def process_html(path: str) -> None:
         """Processes the html file downloaded from vidsrc.to"""
-        print(f"info: processing html")
+        LogSearch.log(f"processing html by removing inapt elements")
+        detected = 0  # For debugging purposes
         with open(path, "r") as f:
             content = f.readlines()
             content = ''.join(content)
@@ -282,14 +301,16 @@ class SearchHandler:
                 parser = FileProcessor()
                 parser.feed(content)
                 if len(parser.positions_tag) == 0:
+                    LogSearch.log(f"removed {detected} inapt elements")
                     break
+                detected += 1
                 content = SearchHandler.delete_substring(
                     content,
                     parser.start_positions[0][1] + 1,
                     parser.end_positions[0][1] + len(parser.positions_tag[0]) - 1
                 )
 
-        print(f"info: writing processed html")
+        LogSearch.log(f"dumping processed html file")
         with open(path, "w") as f:
             f.write(content)
 
@@ -300,7 +321,10 @@ def run_module(modules: List[str], args: Dict[str, Any]) -> None:
         raise ArgumentsError(f"expected 1 argument for command 'search', got {len(modules) - 1} instead")
     if args["new"] and args["raw"]:
         raise ArgumentsError(f"'--new' and '--raw' are mutually exclusive flags")
+    if args["dbg"]:
+        LogSearch.change_emit_level(True)
+        LogSearch.log(f"arguments received by search: {modules}")
     search = SearchHandler(modules[1], args)
-    search.begin_search()
+    search.handle_search()
     return
 
