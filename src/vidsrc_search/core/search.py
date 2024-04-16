@@ -100,6 +100,7 @@ class SearchManager:
     ) -> None:
         """Initializes a SearchManager object with a query"""
         LogSearch.log(f"initializing a searchmanager instance")
+        self.library = Library()
         self.query: str = query
         self.results: List[Dict] = []
         return
@@ -107,10 +108,8 @@ class SearchManager:
     def search_library(self) -> None:
         """Initiates a library search with the query specified during init"""
         LogSearch.log(f"searching library")
-        library = Library()
-        library.check_library()
         LogSearch.log(f"reading library")
-        with open(library.lib_path, "r") as f:
+        with open(self.library.lib_path, "r") as f:
             library = f.read()
         library = json.loads(library)
 
@@ -174,6 +173,9 @@ class SearchHandler:
         LogSearch.log(f"initialized a searchhandler with the query '{query}'")
         self.query = query
         self.results = []
+
+        self.library = Library()
+        self.library.check_library()
 
         self.raw = args["raw"]
         self.new = args["new"]
