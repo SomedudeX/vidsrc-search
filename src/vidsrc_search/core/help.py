@@ -1,6 +1,9 @@
-from typing import List
+from typing import Any, Dict, List
 
 from ..argparsing import ArgumentsError
+from ..utils import Logger
+
+LogHelp = Logger()
 
 
 HELP = """\
@@ -12,9 +15,14 @@ available commands:
     search      search a movie by its name
     library     actions regarding the movie lib
 
+optional flags:
+    -d, --debug enables debug logging and disables
+                certain features (e.g. progressbar)
+
 use 'vidsrc-search help <command>' for info on a
 specific command. arguments are strictly parsed in
-the order specified above\
+the order specified above. when filing a bug report,
+please be sure to use the '--debug' flag in log.\
 """
 
 
@@ -23,6 +31,7 @@ usage: vidsrc-search help [option]
 
 available options:
     help        shows detailed help for 'help'
+    version     shows detailed help for 'version'
     search      shows detailed help for 'search'
     library     shows detailed help for 'library'
 
@@ -82,21 +91,24 @@ example usage:
 """
 
 
-def run_module(arguments: List[str]) -> None:
+def run_module(modules: List[str], args: Dict[str, Any]) -> None:
     """Runs the help module and prints help"""
-    if arguments == ["help", "library"]:
+    if args["dbg"]:
+        LogHelp.change_emit_level(True)
+        LogHelp.log(f"arguments received by help: {modules}")
+    if modules == ["help", "library"]:
         print(HELP_LIB)
         return
-    if arguments == ["help", "search"]:
+    if modules == ["help", "search"]:
         print(HELP_SEARCH)
         return
-    if arguments == ["help", "version"]:
+    if modules == ["help", "version"]:
         print(HELP_VERSION)
         return
-    if arguments == ["help", "help"]:
+    if modules == ["help", "help"]:
         print(HELP_HELP)
         return
-    if arguments == [""] or arguments == ["help"]:
+    if modules == [""] or modules == ["help"]:
         print(HELP)
         return
-    raise ArgumentsError(f"invalid arguments for command 'help' received: {' '.join(arguments)}")
+    raise ArgumentsError(f"invalid arguments for command 'help' received: {' '.join(modules)}")
