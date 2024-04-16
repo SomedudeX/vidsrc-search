@@ -9,12 +9,18 @@ import asyncio
 import aiohttp
 import requests
 
+from .. import utils
+from .. import term
+from ..term import Logger, ansi_code_patch, supports_unicode
+from ..argparsing import ArgumentsError
+
+ansi_code_patch()
+
+# Must import tqdm after ansi code filter has been enabled. This
+# prevents tqdm from printing garbage to the console if the console
+# does not have support for ansi escape sequences
 from tqdm import tqdm
 from typing import Any, Dict, List, Union
-
-from .. import utils
-from ..utils import Logger
-from ..argparsing import ArgumentsError
 
 LogLibrary = Logger()
 
@@ -41,7 +47,6 @@ class Library:
         exit_on_false: bool = True
     ) -> bool:
         """Checks whether the library exist or not"""
-        LogLibrary.log(f"checking if library exists")
         if os.path.exists(self.lib_path):
             return True
         if exit_on_false:
@@ -61,8 +66,11 @@ class DownloadManager:
         """Initializes a download manager instance with the types of media
         to be downloaded from vidsrc
         """
-        LogLibrary.log(f"initialized a downloadmanager instance")
         self.progress: Union[BarShell, tqdm] = BarShell()
+        if not supports_unicode():
+            self.bar_symbol = "·—"
+        else:
+            self.bar_symbol = "─━"
 
         self.types = types
         self.time: float
@@ -82,19 +90,17 @@ class DownloadManager:
         utils.check_internet()
         if LogLibrary.emit == False:
             print(" • initializing library download")
-            LogLibrary.log("checking whether terminal is a tty")
-            utils.check_tty()
+            term.check_tty()
             self.progress = tqdm(
                 total=(len(self.types) * 14) + 3,
                 desc="initializing",
                 leave=False,
-                ascii="╺━",
+                ascii=self.bar_symbol,
                 bar_format=" • {desc} {bar} {percentage:.2f}% • {n_fmt}/{total} steps",
                 ncols=85
             )
         else:
-            LogLibrary.log("checking whether terminal is a tty")
-            utils.check_tty()
+            term.check_tty()
 
         start_time = time.time()
         for item in self.types:
@@ -107,6 +113,7 @@ class DownloadManager:
 
         self.progress.set_description_str("cleaning files")
         RemovalManager.remove_library()   # Removing previously downloaded library
+        LogLibrary.log("moving new library in place")
         utils.unite_jsons(f"~/.local/vidsrc-search/", f"~/.local/vidsrc-search/lib.json", raw=False)
 
         self.progress.update(1)
@@ -117,7 +124,6 @@ class DownloadManager:
 
     def print_summary(self) -> None:
         """Prints the summary of download"""
-        LogLibrary.log(f"printing summary")
         loss = 100 * ((self.expected_size - self.final_size) / self.expected_size)
         if loss < 1:
             loss = 0
@@ -198,7 +204,7 @@ class DownloadManager:
             folder = os.path.expanduser(folder)
 
             self.progress.update(1)
-            LogLibrary.log(f"writing json files")
+            LogLibrary.log(f"writing downloaded json files")
             for index, file in enumerate(jsons):
                 f = open(f"{folder}{index}.json", "w")
                 f.write(json.dumps(file))
@@ -212,21 +218,21 @@ class RemovalManager:
     @staticmethod
     def remove_library() -> None:
         """Removes the library downloaded from vidsrc"""
-        LogLibrary.log(f"handling library removal")
+        LogLibrary.log(f"removing downloaded library json file")
         utils.rmfile(Library.lib_path)
         return
 
     @staticmethod
     def remove_cache() -> None:
         """Removes the cached html storage"""
-        LogLibrary.log(f"handling cache removal")
+        LogLibrary.log(f"removing html cache folder")
         utils.rmdir_recurse(Library.cache_path)
         return
 
     @staticmethod
     def remove_buffer() -> None:
         """Removes the buffer storage"""
-        LogLibrary.log(f"handling buffer removal")
+        LogLibrary.log(f"removing download buffering folders")
         folders = utils.get_file(f"~/.local/vidsrc-search", "_buffer")
         for folder in folders:
             utils.rmdir_recurse(f"~/.local/vidsrc-search/" + folder)
@@ -244,8 +250,7 @@ class RemovalManager:
             LogLibrary.log(f"loading library json for movie link estimation")
             jsons = json.load(f)
 
-        LogLibrary.log("checking whether terminal is a tty")
-        utils.check_tty()
+        term.check_tty()
 
         confirm = input(f" > are you sure you want to remove ~{len(jsons) * 15} links to movies? (Y/n) ")
         if not confirm == "Y":
@@ -263,7 +268,7 @@ class SizeManager:
 
     def __init__(self) -> None:
         """Initializes a SizeManager by calculating the library size"""
-        LogLibrary.log(f"initializing sizemanager class")
+        LogLibrary.log(f"getting library folder size recursively")
         self.size = utils.get_folder_size_recursive(Library.root_path)
         return
 
@@ -274,9 +279,6 @@ class SizeManager:
 
 def run_module(modules: List[str], args: Dict[str, Any]) -> None:
     """Runs the library module"""
-    if args["dbg"]:
-        LogLibrary.change_emit_level(True)
-        LogLibrary.log(f"arguments received by library: {modules}")
     if modules == ["library", "download"]:
         downloader = DownloadManager(["movie", "tv"])
         downloader.handle_download_library()

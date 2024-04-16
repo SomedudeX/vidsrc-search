@@ -1,7 +1,7 @@
 from typing import Any, Dict, List
 
 from ..argparsing import ArgumentsError
-from ..utils import Logger
+from ..term import Logger
 
 LogHelp = Logger()
 
@@ -94,9 +94,6 @@ example usage:
 
 def run_module(modules: List[str], args: Dict[str, Any]) -> None:
     """Runs the help module and prints help"""
-    if args["dbg"]:
-        LogHelp.change_emit_level(True)
-        LogHelp.log(f"arguments received by help: {modules}")
     if modules == ["help", "library"]:
         print(HELP_LIB)
         return

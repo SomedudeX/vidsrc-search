@@ -14,8 +14,6 @@ LogModules = Logger()
 def start(args: Dict[str, Any]) -> int:
     """Runs the module parsed by argparsing.parse_arguments"""
     modules = args["module"]
-    if args["dbg"]:
-        LogModules.change_emit_level(True)
     if modules[0] == "search":
         LogModules.log("starting module search")
         search.run_module(modules, args)

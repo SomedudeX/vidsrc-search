@@ -5,10 +5,11 @@ import json
 import requests
 import webbrowser
 
-from .. import utils
-from ..utils import Logger
-from ..argparsing import ArgumentsError
 from .library import Library
+from .. import utils
+from .. import term
+from ..term import Logger
+from ..argparsing import ArgumentsError
 
 from typing import Any, Dict, List, Tuple, Union
 
@@ -32,7 +33,6 @@ class FileProcessor(HTMLParser):
 
     def __init__(self) -> None:
         """Initializes a FileProcessor and its parent class"""
-        LogSearch.log(f"initialized fileprocessor (derived class of htmlparser)")
         self.start_positions: List[Tuple] = []  # bad start tags
         self.end_positions: List[Tuple] = []    # bad end tags
         self.positions_tag: List[str] = []      # type of tag
@@ -99,7 +99,6 @@ class SearchManager:
         query: str
     ) -> None:
         """Initializes a SearchManager object with a query"""
-        LogSearch.log(f"initializing a searchmanager instance")
         self.library = Library()
         self.query: str = query
         self.results: List[Dict] = []
@@ -107,7 +106,6 @@ class SearchManager:
 
     def search_library(self) -> None:
         """Initiates a library search with the query specified during init"""
-        LogSearch.log(f"searching library")
         LogSearch.log(f"reading library")
         with open(self.library.lib_path, "r") as f:
             library = f.read()
@@ -170,12 +168,10 @@ class SearchHandler:
         args: Dict[str, Any]
     ) -> None:
         """Initializes a SearchHandler object"""
-        LogSearch.log(f"initialized a searchhandler with the query '{query}'")
         self.query = query
         self.results = []
 
-        LogSearch.log("checking whether terminal is a tty")
-        utils.check_tty()
+        term.check_tty()
 
         self.library = Library()
         self.library.check_library()
@@ -198,7 +194,6 @@ class SearchHandler:
             print(f" • '{self.query}' not found in movies library")
             print(f" • vidsrc-search terminating due to entry not found")
             return
-        LogSearch.log(f"pretty printing movies with tabulate")
         self.print_movies()
         open_index = self.ask_open_index()
         self.show_movie(open_index)
@@ -220,7 +215,6 @@ class SearchHandler:
         while True:
             try:
                 open_index = int(input(" > choose an index to open in browser: "))
-                LogSearch.log(f"validating chosen open index")
                 if open_index <= 0 or open_index > len(self.results):
                     raise ValueError()
                 open_index = len(self.results) - open_index
@@ -231,10 +225,8 @@ class SearchHandler:
 
     def show_movie(self, index: int) -> None:
         """Shows the movie chosen by the user in their browser"""
-        LogSearch.log(f"checking internet")
-        utils.check_internet()
-        LogSearch.log(f"printing warning")
         SearchHandler.print_warning()
+        utils.check_internet()
 
         LogSearch.log(f"gathering movie information from library")
         title = self.results[index]["Title"]
@@ -242,6 +234,7 @@ class SearchHandler:
         id = self.results[index]["IMDB ID"]
 
         if self.raw:
+            LogSearch.log("directly opening vidsrc link in browser")
             print(f" • opening '{title}' in new browser tab")
             webbrowser.open(url)
             return
@@ -305,7 +298,7 @@ class SearchHandler:
                 parser = FileProcessor()
                 parser.feed(content)
                 if len(parser.positions_tag) == 0:
-                    LogSearch.log(f"removed {detected} inapt elements")
+                    LogSearch.log(f"removed {detected} inapt element(s)")
                     break
                 detected += 1
                 content = SearchHandler.delete_substring(
@@ -325,9 +318,6 @@ def run_module(modules: List[str], args: Dict[str, Any]) -> None:
         raise ArgumentsError(f"expected 1 argument for command 'search', got {len(modules) - 1} instead")
     if args["new"] and args["raw"]:
         raise ArgumentsError(f"'--new' and '--raw' are mutually exclusive flags")
-    if args["dbg"]:
-        LogSearch.change_emit_level(True)
-        LogSearch.log(f"arguments received by search: {modules}")
     search = SearchHandler(modules[1], args)
     search.handle_search()
     return
