@@ -1,5 +1,3 @@
-# We do not have logging in term.py because
-
 import os
 import sys
 import inspect

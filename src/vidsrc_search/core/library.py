@@ -38,9 +38,9 @@ class BarShell(tqdm):
 
 class Library:
     """Properties of the library"""
-    root_path = os.path.expanduser("~/.local/vidsrc-search")
-    lib_path = os.path.expanduser("~/.local/vidsrc-search/lib.json")
-    cache_path = os.path.expanduser("~/.local/vidsrc-search/cache")
+    root_path = os.path.expanduser("~/.local/share/vidsrc-search")
+    lib_path = os.path.expanduser("~/.local/share/vidsrc-search/lib.json")
+    cache_path = os.path.expanduser("~/.local/share/vidsrc-search/cache")
 
     def check_library(
         self,
@@ -108,13 +108,20 @@ class DownloadManager:
             asyncio.run(self.download(size, item))
 
             self.final_size += size * 15
-            self.expected_size += utils.unite_jsons(f"~/.local/vidsrc-search/{item}_buffer/", f"~/.local/vidsrc-search/{item}.json")
+            self.expected_size += utils.unite_jsons(
+                f"~/.local/share/vidsrc-search/{item}_buffer/", 
+                f"~/.local/share/vidsrc-search/{item}.json"
+            )
         end_time = time.time()
 
         self.progress.set_description_str("cleaning files")
         RemovalManager.remove_library()   # Removing previously downloaded library
         LogLibrary.log("moving new library in place")
-        utils.unite_jsons(f"~/.local/vidsrc-search/", f"~/.local/vidsrc-search/lib.json", raw=False)
+        utils.unite_jsons(
+            f"~/.local/share/vidsrc-search/", 
+            f"~/.local/share/vidsrc-search/lib.json", 
+            raw=False
+        )
 
         self.progress.update(1)
         self.time = end_time - start_time
@@ -133,7 +140,10 @@ class DownloadManager:
         print(f" • vidsrc library has been downloaded")
         return
 
-    def get_download_size(self, kind: str) -> int:
+    def get_download_size(
+        self, 
+        kind: str
+    ) -> int:
         """Estimates the number of pages (links) of a download using binary
         search.
         """
@@ -174,7 +184,11 @@ class DownloadManager:
         return index
 
     @staticmethod
-    async def fetch_downloads(session: aiohttp.ClientSession, url: str, _tries: int = 3) -> Union[Any, None]:
+    async def fetch_downloads(
+        session: aiohttp.ClientSession, 
+        url: str, 
+        _tries: int = 3
+    ) -> Union[Any, None]:
         """Asynchronously fetch a json file from a url, retrying if the response is not a json"""
         async with session.get(url) as response:
             if response.content_type == "application/json":
@@ -187,10 +201,14 @@ class DownloadManager:
             LogLibrary.log(f"too many retries: omitting current link")
             return
 
-    async def download(self, total: int, type: str):
+    async def download(
+        self, 
+        total: int, 
+        type: str
+    ):
         """Downloads the movie library into a buffer folder on disk"""
         domain = f"https://vidsrc.to/vapi/{type}/new/"
-        folder = f"~/.local/vidsrc-search/{type}_buffer/"
+        folder = f"~/.local/share/vidsrc-search/{type}_buffer/"
         urls = [f"{domain}{i}" for i in range(total)]
         LogLibrary.log(f"initiating downloads with {total} links to {type}s")
 
@@ -233,9 +251,9 @@ class RemovalManager:
     def remove_buffer() -> None:
         """Removes the buffer storage"""
         LogLibrary.log(f"removing download buffering folders")
-        folders = utils.get_file(f"~/.local/vidsrc-search", "_buffer")
+        folders = utils.get_file(f"~/.local/share/vidsrc-search", "_buffer")
         for folder in folders:
-            utils.rmdir_recurse(f"~/.local/vidsrc-search/" + folder)
+            utils.rmdir_recurse(f"~/.local/share/vidsrc-search/" + folder)
         return
 
     def handle_remove_library(self) -> None:

@@ -239,11 +239,11 @@ class SearchHandler:
             webbrowser.open(url)
             return
 
-        if self.new or not os.path.exists(os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html")):
-            SearchHandler.cache_movie(url, f"~/.local/vidsrc-search/cache/{id}.html")
-        SearchHandler.process_html(os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html"))
+        if self.new or not os.path.exists(os.path.expanduser(f"~/.local/share/vidsrc-search/cache/{id}.html")):
+            SearchHandler.cache_movie(url, f"~/.local/share/vidsrc-search/cache/{id}.html")
+        SearchHandler.process_html(os.path.expanduser(f"~/.local/share/vidsrc-search/cache/{id}.html"))
         print(f" • opening '{title}' in new browser tab")
-        webbrowser.open("file://" + os.path.expanduser(f"~/.local/vidsrc-search/cache/{id}.html"))
+        webbrowser.open("file://" + os.path.expanduser(f"~/.local/share/vidsrc-search/cache/{id}.html"))
         return
 
     def process_query(self) -> None:
@@ -263,7 +263,7 @@ class SearchHandler:
         print("            any responsibility, express or implied, of the consequences ")
         print("            as a result your usage or dependence on the website provided ")
         print("            through this tool. ")
-        print(" • warning: the following window shown will be the cached contents of vidsrc.to\n")
+        print(" • warning: the following window shown will be the cached contents of vidsrc.to")
         affirm = input(" > i have read and understood the conditions above (Y/n) ")
         print()
         if not affirm == "Y":

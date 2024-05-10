@@ -66,8 +66,9 @@ def cleanup() -> None:
     """Removes buffer directories created during the execution of the program"""
     LogUtils.log(f"performing program cleanup sequence")
     rmdir_recurse(os.path.expanduser("~/.config/pymovie")) # Pre v0.1.4 folder
-    rmfile("~/.local/vidsrc-search/movie.json")
-    rmfile("~/.local/vidsrc-search/tv.json")
+    rmdir_recurse(os.path.expanduser("~/.local/vidsrc-search")) # Pre v0.2.4 folder
+    rmfile("~/.local/share/vidsrc-search/movie.json")
+    rmfile("~/.local/share/vidsrc-search/tv.json")
     RemovalManager.remove_buffer()
     return
 
@@ -85,9 +86,9 @@ def initialize(args: Dict[str, Any]) -> None:
         LogUtils.log(f"{platform.python_implementation().lower()} {platform.python_version().lower()}")
         LogUtils.log(f"{platform.platform(True, True).lower()} {platform.machine().lower()}")
     LogUtils.log("initializing directories")
-    required_path_one = os.path.expanduser("~/.local/vidsrc-search/movie_buffer")
-    required_path_two = os.path.expanduser("~/.local/vidsrc-search/tv_buffer")
-    required_path_three = os.path.expanduser("~/.local/vidsrc-search/cache")
+    required_path_one = os.path.expanduser("~/.local/share/vidsrc-search/movie_buffer")
+    required_path_two = os.path.expanduser("~/.local/share/vidsrc-search/tv_buffer")
+    required_path_three = os.path.expanduser("~/.local/share/vidsrc-search/cache")
     os.makedirs(required_path_one, exist_ok=True)
     os.makedirs(required_path_two, exist_ok=True)
     os.makedirs(required_path_three, exist_ok=True)
