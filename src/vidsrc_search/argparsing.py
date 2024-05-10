@@ -29,7 +29,7 @@ def is_int(arg: str) -> bool:
 
 def is_stacked_flag(flag: str) -> bool:
     """Whether an argument is a stacked flag (e.g. -abc)"""
-    return len(flag) >= 2 and \
+    return len(flag) >= 3 and \
            flag[0] == "-" and \
            flag[1] != "-"
 
