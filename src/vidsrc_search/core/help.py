@@ -54,23 +54,15 @@ example usage:
 
 
 HELP_SEARCH = """\
-usage: vidsrc-search search <option> [flags]
+usage: vidsrc-search search <option>
 
 required option:
     <str>       a movie title that you would like
                 vidsrc-search to search for
 
-optional flags:
-    -r, --raw   when this flag is specified, the
-                program will open the original website
-                instead of caching the html
-    -n, --new   when this flag is specified, the
-                program will re-cache the html to your
-                computer from vidsrc.to
-
 example usage:
     vidsrc-search search 'oppenheimer'
-    vidsrc-search search 'avatar' --new
+    vidsrc-search search 'avatar'
 
 the optional flags will have no effect with commands
 other than 'search'\

@@ -51,8 +51,7 @@ def parse_arguments(argv: List[str]) -> Dict[str, Any]:
     positionals, flags = split_arguments(argv[1:])
     parsed_arguments = {
         "module": [""],
-        "raw": False,
-        "new": False,
+        "web": False,
         "dbg": False
     }
 
@@ -60,11 +59,8 @@ def parse_arguments(argv: List[str]) -> Dict[str, Any]:
         parsed_arguments["module"] = positionals
 
     for flag in flags:   # Mapping each command line flag to a dictionary key
-        if flag == "--raw" or flag == "-r":
-            parsed_arguments["raw"] = True
-            continue
-        if flag == "--new" or flag == "-n":
-            parsed_arguments["new"] = True
+        if flag == "--web" or flag == "-w":
+            parsed_arguments["web"] = True
             continue
         if flag == "--debug" or flag == "-d":
             parsed_arguments["dbg"] = True

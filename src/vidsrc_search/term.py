@@ -121,8 +121,8 @@ def supports_color():
             return False
         else:
             try:
-                reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Console")
-                reg_key_value, _ = winreg.QueryValueEx(reg_key, "VirtualTerminalLevel")
+                reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Console") # type: ignore
+                reg_key_value, _ = winreg.QueryValueEx(reg_key, "VirtualTerminalLevel") # type: ignore
             except FileNotFoundError:
                 return False
             else:

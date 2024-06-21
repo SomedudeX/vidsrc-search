@@ -40,7 +40,7 @@ class Library:
     """Properties of the library"""
     root_path = os.path.expanduser("~/.local/share/vidsrc-search")
     lib_path = os.path.expanduser("~/.local/share/vidsrc-search/lib.json")
-    cache_path = os.path.expanduser("~/.local/share/vidsrc-search/cache")
+    cache_path = os.path.expanduser("~/.local/share/vidsrc-search/cache") # legacy purposes
 
     def check_library(
         self,
@@ -241,7 +241,7 @@ class RemovalManager:
         return
 
     @staticmethod
-    def remove_cache() -> None:
+    def remove_cache() -> None: # legacy purposes
         """Removes the cached html storage"""
         LogLibrary.log(f"removing html cache folder")
         utils.rmdir_recurse(Library.cache_path)

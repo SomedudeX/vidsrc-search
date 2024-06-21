@@ -95,7 +95,7 @@ def initialize(args: Dict[str, Any]) -> None:
 
     if sys.platform in ["win32", "cygwin", "msys"]:  # Windows has some issues with asyncio
         LogUtils.log("patching windows asyncio")
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())  # type: ignore
     return
 
 
