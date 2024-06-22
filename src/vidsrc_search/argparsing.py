@@ -51,6 +51,7 @@ def parse_arguments(argv: List[str]) -> Dict[str, Any]:
     positionals, flags = split_arguments(argv[1:])
     parsed_arguments = {
         "module": [""],
+        "byid": False,
         "raw": False,
         "new": False,
         "dbg": False
@@ -68,6 +69,9 @@ def parse_arguments(argv: List[str]) -> Dict[str, Any]:
             continue
         if flag == "--debug" or flag == "-d":
             parsed_arguments["dbg"] = True
+            continue
+        if flag == "--by-id":
+            parsed_arguments["byid"] = True
             continue
         if is_stacked_flag(flag):
             raise ArgumentsError(f"stacked flag '{flag}' not allowed", 1)

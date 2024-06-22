@@ -15,6 +15,16 @@ from .core.library import RemovalManager
 
 LogUtils = Logger()
 
+WARNING_TEXT = """\
+:::       :::     :::     :::::::::  ::::    ::: ::::::::::: ::::    :::  ::::::::  
+:+:       :+:   :+: :+:   :+:    :+: :+:+:   :+:     :+:     :+:+:   :+: :+:    :+: 
++:+       +:+  +:+   +:+  +:+    +:+ :+:+:+  +:+     +:+     :+:+:+  +:+ +:+        
++#+  +:+  +#+ +#++:++#++: +#++:++#:  +#+ +:+ +#+     +#+     +#+ +:+ +#+ :#:        
++#+ +#+#+ +#+ +#+     +#+ +#+    +#+ +#+  +#+#+#     +#+     +#+  +#+#+# +#+   +#+# 
+ #+#+# #+#+#  #+#     #+# #+#    #+# #+#   #+#+#     #+#     #+#   #+#+# #+#    #+# 
+  ###   ###   ###     ### ###    ### ###    #### ########### ###    ####  ########  
+"""
+
 
 def rmdir_recurse(path: str) -> None:
     """Uses shutil to delete directories recursively"""
@@ -85,6 +95,12 @@ def initialize(args: Dict[str, Any]) -> None:
         LogUtils.log(f"vidsrc-search {__version__}")
         LogUtils.log(f"{platform.python_implementation().lower()} {platform.python_version().lower()}")
         LogUtils.log(f"{platform.platform(True, True).lower()} {platform.machine().lower()}")
+    LogUtils.log(f"\n{WARNING_TEXT}")
+    LogUtils.log("*=" * 42)
+    LogUtils.log("  the current release (v0.2.7rc1) you are running contains experimental features")
+    LogUtils.log("   that may break with time. please use with caution or consider switching to")
+    LogUtils.log("            the stable release (v0.2.7) if you encounter errors")
+    LogUtils.log("*=" * 42)
     LogUtils.log("initializing directories")
     required_path_one = os.path.expanduser("~/.local/share/vidsrc-search/movie_buffer")
     required_path_two = os.path.expanduser("~/.local/share/vidsrc-search/tv_buffer")

@@ -21,8 +21,11 @@ optional flags:
 
 use 'vidsrc-search help <command>' for info on a
 specific command. arguments are strictly parsed in the
-order specified above. when filing a bug report, please
-be sure to use the '--debug' flag in log.\
+order specified above. 
+
+if for whatever reason the webpage is not displaying,
+try using the '--raw' flag when you search. adblockers
+are strongly recommended.\
 """
 
 
@@ -61,12 +64,14 @@ required option:
                 vidsrc-search to search for
 
 optional flags:
-    -r, --raw   when this flag is specified, the
-                program will open the original website
-                instead of caching the html
+    --by-id     search by imdb id as opposed to by the
+                title of the movie/tv show.
     -n, --new   when this flag is specified, the
                 program will re-cache the html to your
                 computer from vidsrc.to
+    -r, --raw   when this flag is specified, the
+                program will open the original website
+                instead of caching the html. 
 
 example usage:
     vidsrc-search search 'oppenheimer'

@@ -1,6 +1,7 @@
 # Using classes for better organization
 
 import os
+import re
 import json
 import requests
 import webbrowser
@@ -11,84 +12,12 @@ from .. import term
 from ..term import Logger
 from ..argparsing import ArgumentsError
 
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List
 
 from tabulate import tabulate
 from thefuzz.fuzz import partial_ratio, ratio
-from html.parser import HTMLParser
 
 LogSearch = Logger()
-
-
-
-class FileProcessor(HTMLParser):
-    """Processes the HTML file downloaded from vidsrc.to. This class is derived
-    from the HTMLParser class in Python's standard library. See its
-    documentation for more information.
-
-    When calling the feed() function on an instance of this class, it will mark
-    any start and end tag that is "bad" (aka an ad/redirect script) and store
-    it in the class attributes.
-    """
-
-    def __init__(self) -> None:
-        """Initializes a FileProcessor and its parent class"""
-        self.start_positions: List[Tuple] = []  # bad start tags
-        self.end_positions: List[Tuple] = []    # bad end tags
-        self.positions_tag: List[str] = []      # type of tag
-
-        self._current_bad_script = 0
-        self._current_bad_element = 0
-        super().__init__()
-        return
-
-    def handle_starttag(
-        self,
-        tag: Union[str, Any],
-        attrs: List[Any]
-    ) -> None:
-        """When a start tag is encountered, this function is automatically
-        called. It will insert the current position (lineno and offset) to
-        the start_positions if the tag is "bad"
-        """
-        if tag not in ["script"]:
-            return
-        for attr in attrs:
-            if self.bad_script(attr):
-                LogSearch.log(f"bad start tag detected")
-                self._current_bad_script += 1
-                self.start_positions.append(self.getpos())
-        return
-
-    def handle_endtag(
-        self,
-        tag: Union[str, Any]
-    ) -> None:
-        """When an end tag is encountered, this function is automatically
-        called. It will insert the current position (lineno and offset) to
-        the end_positions if the tag is "bad"
-        """
-        if tag not in ["script"]:
-            return
-        if self._current_bad_script == 1:
-            LogSearch.log(f"bad end tag detected")
-            self._current_bad_script = 0
-            self.end_positions.append(self.getpos())
-            self.positions_tag.append("</script>")
-        if self._current_bad_script != 0:
-            self._current_bad_script -= 1
-        return
-
-    @staticmethod
-    def bad_script(script_attr: tuple):
-        """Checks if a scrip attribute is a "bad" attribute"""
-        if script_attr[0] != "src":
-            return False
-        if "embed" in script_attr[1]:
-            return False
-        if "cloudflare" in script_attr[1]:
-            return False
-        return True
 
 
 class SearchManager:
@@ -178,6 +107,7 @@ class SearchHandler:
 
         self.raw = args["raw"]
         self.new = args["new"]
+        self.byid = args["byid"]
         return
 
     def handle_search(self) -> None:
@@ -186,6 +116,11 @@ class SearchHandler:
         print(f" • searching json library for '{self.query}'")
         print(f" • open raw website: {str(self.raw).lower()}")
         print(f" • recaching website: {str(self.new).lower()}")
+        print(f" • search by imdb id: {str(self.byid).lower()}")
+
+        if self.byid:
+            self.handle_id()
+            return
 
         self.manager = SearchManager(self.query)
         self.manager.search_library()
@@ -198,6 +133,35 @@ class SearchHandler:
         open_index = self.ask_open_index()
         self.show_movie(open_index)
         return
+    
+    def handle_id(self):
+        """Handles searching the movie library by imdb id"""
+        LogSearch.log(f"reading library")
+        with open(self.library.lib_path, "r") as f:
+            library = f.read()
+        library = json.loads(library)
+
+        LogSearch.log(f"checking library entries for potential match")
+        for entry in library:
+            if entry["imdb_id"][2:] == self.query:
+                print(f" • found a matching entry: {entry["title"]}")
+                url = entry["embed_url_imdb"]
+                title = entry["title"]
+                id = entry["imdb_id"][2:]
+
+        if self.raw:
+            LogSearch.log("directly opening vidsrc link in browser")
+            print(f" • opening '{title}' in new browser tab")
+            webbrowser.open(url)
+            return
+
+        if self.new or not os.path.exists(os.path.expanduser(f"~/.local/share/vidsrc-search/cache/{id}.html")):
+            SearchHandler.cache_movie(url, f"~/.local/share/vidsrc-search/cache/{id}.html")
+        SearchHandler.process_html(os.path.expanduser(f"~/.local/share/vidsrc-search/cache/{id}.html"))
+        print(f" • opening '{title}' in new browser tab")
+        webbrowser.open("file://" + os.path.expanduser(f"~/.local/share/vidsrc-search/cache/{id}.html"))
+        return
+        
 
     def print_movies(self) -> None:
         """Pretty prints the movies in a table"""
@@ -287,27 +251,10 @@ class SearchHandler:
         return deleted_text
 
     @staticmethod
-    def process_html(path: str) -> None:
-        """Processes the html file downloaded from vidsrc.to"""
-        LogSearch.log(f"processing html by removing inapt elements")
-        detected = 0  # For debugging purposes
+    def process_html(path):
         with open(path, "r") as f:
-            content = f.readlines()
-            content = ''.join(content)
-            while True:
-                parser = FileProcessor()
-                parser.feed(content)
-                if len(parser.positions_tag) == 0:
-                    LogSearch.log(f"removed {detected} inapt element(s)")
-                    break
-                detected += 1
-                content = SearchHandler.delete_substring(
-                    content,
-                    parser.start_positions[0][1] + 1,
-                    parser.end_positions[0][1] + len(parser.positions_tag[0]) - 1
-                )
-
-        LogSearch.log(f"dumping processed html file")
+            content = "".join(f.readline())
+            content = re.sub(r"src=(['\"])(?:(?!\\1|cloudflare|embed)[^\\'\\\"])*\\1", "src=''", content)
         with open(path, "w") as f:
             f.write(content)
 
