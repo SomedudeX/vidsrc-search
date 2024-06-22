@@ -1,5 +1,7 @@
 ## Overview
 
+**Important: This project is no longer maintained and is archived as of Jun 21, 2024**
+
 ![GitHub Release](https://img.shields.io/github/v/release/SomedudeX/vidsrc-search?style=for-the-badge) ![PyPI - Status](https://img.shields.io/pypi/status/vidsrc-search?style=for-the-badge) ![PyPI - Downloads](https://img.shields.io/pypi/dm/vidsrc-search?style=for-the-badge)
 
 A command-line utility program that searches [VidSrc](https://vidsrc.to)'s API to provide movies for free.
